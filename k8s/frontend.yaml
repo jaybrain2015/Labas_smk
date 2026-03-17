@@ -22,7 +22,7 @@ spec:
             - name: VITE_AI_URL
               value: "https://healthcare-appointments.com/ai"
           ports:
-            - containerPort: 5173
+            - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -33,5 +33,5 @@ spec:
   selector:
     app: frontend
   ports:
-    - port: 5173
-      targetPort: 5173
+    - port: 80
+      targetPort: 80
