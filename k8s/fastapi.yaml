@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ai-service
-          image: jaybrain/labas-fastapi:5baa72742a24a52bebcb32b679dc76796888f2c4
+          image: jaybrain/labas-fastapi:f9698eb706c293d7a77e39b3358433dcf852b7a6
           env:
             - name: ANTHROPIC_API_KEY
               valueFrom:
