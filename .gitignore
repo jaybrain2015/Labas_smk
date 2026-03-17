@@ -1,17 +1,24 @@
+# Terraform
+infra/terraform.tfvars
+infra/.terraform/
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+infra/.terraform.lock.hcl
+
 # Environment files
 .env
+.env.local
+.env.production
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Laravel
+backend/vendor/
+backend/.env
 
 # Python
 __pycache__/
 *.pyc
-
-# Node
-node_modules/
-
-# Logs
-*.log
-
-# OS
-.DS_Store
-
-readme2.md
+ai-service/__pycache__/
