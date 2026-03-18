@@ -2,8 +2,8 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { authApi, getCsrfCookie } from '../lib/api'
-import campusBg from '../assets/campus-bg.png'
-import labsLogo from '../assets/labs-smk-logo.png'
+import campusBg from '../assets/campus-bg.webp'
+import labsLogo from '../assets/labs-smk-logo.webp'
 import './Login.css'
 
 const W = 320, H = 72
