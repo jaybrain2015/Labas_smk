@@ -4,6 +4,7 @@ import { useAuthStore } from '../store/authStore'
 const API_URL = import.meta.env.VITE_API_URL || '/api'
 
 axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
 axios.defaults.xsrfCookieName = 'XSRF-TOKEN';
 axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
 
@@ -48,8 +49,10 @@ export default api
 
 // Auth
 export const authApi = {
-    login: (email: string, password: string) =>
-        api.post('/auth/login', { email, password }),
+    login: async (email: string, password: string) => {
+        await getCsrfCookie()
+        return api.post('/auth/login', { email, password })
+    },
     register: (data: any) =>
         api.post('/auth/register', data),
     logout: () => api.post('/auth/logout'),
