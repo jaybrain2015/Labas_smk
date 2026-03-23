@@ -14,6 +14,8 @@ import {
     Menu,
 } from 'lucide-react'
 
+import labsLogo from '../assets/labs-smk-logo.webp'
+
 interface SidebarProps {
     isOpen: boolean
     onClose: () => void
@@ -55,11 +57,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 {/* Logo */}
                 <div className="flex items-center h-24 px-6 shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm">
-                            <GraduationCap size={22} className="text-[#9b1c1c]" />
-                        </div>
+                        <img src={labsLogo} alt="Labas SMK" className="w-14 h-14 rounded-xl object-contain bg-white" />
                         <h1 className="text-xl font-heading font-bold text-white tracking-tight">
-                            Sahara
+                            Labas SMK
                         </h1>
                     </div>
                 </div>
