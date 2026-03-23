@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: jaybrain/labas-nginx:b470816232a132fa31101335798b2f959e7ed94d
+          image: jaybrain/labas-nginx:c33fdc6d725b13f78f7f06c89fa4750a4b810c91
           ports:
             - containerPort: 80
 ---
