@@ -1,14 +1,35 @@
+import { motion, Variants } from 'framer-motion'
+
 interface SkeletonProps {
     className?: string
 }
 
+const pulseVariants: Variants = {
+    initial: { opacity: 0.4 },
+    animate: {
+        opacity: [0.4, 0.7, 0.4],
+        transition: {
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+        }
+    }
+}
+
 export function Skeleton({ className = '' }: SkeletonProps) {
-    return <div className={`skeleton ${className}`} />
+    return (
+        <motion.div
+            variants={pulseVariants}
+            initial="initial"
+            animate="animate"
+            className={`bg-slate-200 rounded ${className}`}
+        />
+    )
 }
 
 export function CardSkeleton() {
     return (
-        <div className="glass-card p-5 space-y-3 animate-fade-in">
+        <div className="glass-card p-5 space-y-3">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-8 w-16" />
             <Skeleton className="h-3 w-32" />
@@ -28,7 +49,7 @@ export function TableRowSkeleton({ cols = 5 }: { cols?: number }) {
 
 export function ChatMessageSkeleton() {
     return (
-        <div className="flex gap-3 animate-fade-in">
+        <div className="flex gap-3">
             <Skeleton className="w-8 h-8 rounded-full shrink-0" />
             <div className="space-y-2 flex-1">
                 <Skeleton className="h-4 w-3/4" />
