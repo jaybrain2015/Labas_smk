@@ -495,6 +495,52 @@
 }
 
 .login-signup-link button {
+    background: none;
+    border: none;
+    color: #bf2626;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.signup-role-btns {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.role-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.role-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.role-btn.active {
+    background: #bf2626;
+    border-color: #bf2626;
+    box-shadow: 0 0 15px rgba(191, 38, 38, 0.3);
+}
+
+.field-hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.4rem;
+    font-style: italic;
+}
+
+.login-signup-link button {
     color: #f52323;
     font-weight: 600;
     background: none;

@@ -15,6 +15,9 @@ class Schedule extends Model
         'end_time',
         'group_name',
         'semester',
+        'course',
+        'year',
+        'semester_level',
     ];
 
     public function room()

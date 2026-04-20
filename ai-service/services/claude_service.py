@@ -2,36 +2,54 @@
 Claude AI Service — Handles communication with Anthropic Claude API.
 """
 import anthropic
+from anthropic import AsyncAnthropic
+
 from typing import Optional
 from config import get_settings
 from services.context_builder import build_context, detect_language, get_language_instruction
 
 
-SYSTEM_PROMPT_TEMPLATE = """You are "Labas SMK" — a friendly, knowledgeable AI assistant for students at SMK College of Applied Sciences in Vilnius, Lithuania.
+SYSTEM_PROMPT_TEMPLATE = """You are Mia, a friendly and warm student advisor at SMK College of Applied Sciences. 
 
-Your personality:
-- Warm and approachable, like a helpful upperclassman
-- Professional but not stiff
-- Use occasional Lithuanian greetings naturally (e.g., "Labas!", "Sveiki!")
-- Proactive — offer related useful info when relevant
+PERSONALITY:
+- Warm, casual, and helpful — like a knowledgeable senior student.
+- You speak naturally, like texting a friend, not reading from a website.
+- You are always encouraging and patient.
 
-Your capabilities:
-- Answer questions about campus procedures, schedules, and services
-- Help find available rooms
-- Provide information about events and deadlines
-- Guide students through administrative processes
-- Share contact information for relevant departments
+RESPONSE RULES (follow these strictly):
+1. Message Length: Your replies MUST be under 2-3 sentences maximum. Short and sweet.
+2. No Formatting: NEVER use bullet points, numbered lists, or bold text (**). Use only plain text.
+3. Gradual Info: Never dump all information at once. Provide just the most immediate part of the answer.
+4. One Question: Always end every message with exactly one question to understand what the student actually needs or to guide them further.
+5. Human Tone: Avoid generic "As an AI..." or formal robotic language. Speak like a friend.
+6. One Topic: Never answer more than one topic per message.
+7. Personalization: ALWAYS check the "Active User Profile" section in the context.
+   - If the role is "ADMIN", greet them as an administrator (e.g., "Hello, Admin!") and acknowledge that they don't have a class schedule. Offer help with campus management tasks like checking rooms or upcoming events.
+   - If the role is "STUDENT" (or not specified), use their name naturally (e.g., "Hi Jonas!"). If they ask about their class, use the provided "User's Today Schedule" immediately.
+   - Never ask for info (name, campus, ID) that is already in the context.
 
-Rules:
-- Always be accurate. If you're unsure, say so and suggest who to contact
-- Keep responses concise but complete (2-4 paragraphs max)
-- When mentioning times, use 24-hour format (e.g., 14:00)
-- If asked about something outside SMK scope, politely redirect
-- Never make up information about specific rooms, schedules, or people
+CONVERSATION RULES:
+- Remember what the student said earlier and build on your answers.
+- Go deeper only when the student asks for more.
+- If a student seems confused, slow down and simplify. Never repeat yourself.
+
+KNOWLEDGE:
+- Campuses: Vilnius (Kalvarijų g. 137E), Kaunas (Vilties g. 2), Klaipėda (Liepų g. 83B).
+- Programs: Web Technologies, Economics, 3D Modeling, Lithuanian Language, and more.
+- Detailed Info: For schedules/enrollment, direct them to smk.classter.com or the student office.
+- Vilnius Office: +370 604 73 280 / vilnius@smk.lt
+- Kaunas Office: +370 604 73 638 / milita.gradicke@smk.lt
+- Klaipėda Office: +370 601 74 830 / alina.minceviciene@smk.lt
+
+WHAT YOU NEVER DO:
+- Never paste long lists of info unprompted.
+- Never say "I don't have that information" without offering an alternative.
+- Never use bold, bullets, or complex formatting.
+
+SMK Knowledge Base (for facts):
+{context}
 
 {language_instruction}
-
-{context}
 """
 
 
@@ -43,7 +61,8 @@ class ClaudeService:
         self.client = None
 
         if self.api_key:
-            self.client = anthropic.Anthropic(api_key=self.api_key)
+            self.client = AsyncAnthropic(api_key=self.api_key)
+
 
     @property
     def is_available(self) -> bool:
@@ -74,7 +93,7 @@ class ClaudeService:
             return self._fallback_response(message, detected_language)
 
         try:
-            response = self.client.messages.create(
+            response = await self.client.messages.create(
                 model=self.model,
                 max_tokens=1024,
                 system=system_prompt,
@@ -104,6 +123,90 @@ class ClaudeService:
                 "detected_language": detected_language,
                 "suggestions": [],
             }
+
+    async def chat_stream(
+        self,
+        message: str,
+        user_context: Optional[dict] = None,
+        language: Optional[str] = None,
+    ):
+        """Stream a response from Claude."""
+        detected_language = language or detect_language(message)
+        language_instruction = get_language_instruction(detected_language)
+        context = build_context(user_context, detected_language)
+
+        system_prompt = SYSTEM_PROMPT_TEMPLATE.format(
+            language_instruction=language_instruction,
+            context=context,
+        )
+
+        if not self.is_available:
+            # Yield the fallback response in a single chunk for simplicity
+            fallback = self._fallback_response(message, detected_language)
+            yield fallback["response"]
+            return
+
+        try:
+            async with self.client.messages.stream(
+                model=self.model,
+                max_tokens=1024,
+                system=system_prompt,
+                messages=[{"role": "user", "content": message}],
+            ) as stream:
+                async for text in stream.text_stream:
+                    yield text
+        except Exception as e:
+            yield f"\n\n[Error: {str(e)[:100]}]"
+
+    async def translate(
+        self,
+        text: Optional[str] = None,
+        data: Optional[dict] = None,
+        items: Optional[list] = None,
+        target_language: str = "en",
+    ) -> dict:
+        """Translate text, data, or multiple items to target language."""
+        if not self.is_available:
+            return {"error": "AI service not available", "translated": text or data or items}
+
+        prompt = f"Translate the following to {target_language}. "
+        if items:
+            prompt += "Return ONLY a JSON object with a key 'translated_items' containing the list of translated objects. Keep the same keys. Do not add any explanation.\n\n"
+            prompt += str(items)
+        elif data:
+            prompt += "Return ONLY the translated JSON object with the same keys. Do not add any explanation.\n\n"
+            prompt += str(data)
+        else:
+            prompt += "Return ONLY the translated text.\n\n"
+            prompt += text
+
+        try:
+            response = await self.client.messages.create(
+                model=self.model,
+                max_tokens=4096, # Increased for batch
+                system="You are a professional translator for SMK College. Translate accurately while maintaining the original tone and format.",
+                messages=[{"role": "user", "content": prompt}],
+            )
+            
+            result = response.content[0].text
+            import json
+            import re
+            
+            if items or data:
+                # Extract JSON block
+                json_match = re.search(r'(\{.*\}|\[.*\])', result, re.DOTALL)
+                if json_match:
+                    try:
+                        return {"translated": json.loads(json_match.group())}
+                    except:
+                        pass
+                return {"translated": result}
+            else:
+                return {"translated": result}
+
+        except Exception as e:
+            return {"error": str(e), "translated": text or data or items}
+
 
     def _fallback_response(self, message: str, language: str) -> dict:
         """Provide a helpful response when Claude API is not configured."""

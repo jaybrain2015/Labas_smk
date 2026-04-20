@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -25,7 +25,9 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 /* Scrollbar */
@@ -120,7 +122,8 @@ h6 {
   }
 
   .sidebar-nav-item.active {
-    @apply bg-[#f4f7fa] text-[#9b1c1c] -mr-4 ml-2 shadow-[0_10px_30px_rgba(0,0,0,0.05)];
+    @apply bg-[#f4f7fa] text-[#9b1c1c] -mr-4 ml-2;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   }
 
   .sidebar-curve-top,

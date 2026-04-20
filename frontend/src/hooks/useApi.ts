@@ -47,17 +47,61 @@ export function useRoom(id: number) {
 
 // ── Events ────────────────────────────────────────────
 
-export function useEvents(category?: string) {
+export function useEvents(category?: string, isEditorial?: boolean, lang?: string) {
     return useQuery({
-        queryKey: ['events', category],
-        queryFn: () => eventsApi.all({ category }).then(r => r.data),
+        queryKey: ['events', category, isEditorial, lang],
+        queryFn: () => eventsApi.all({ category, is_editorial: isEditorial, lang }).then(r => r.data),
     })
 }
 
-export function useUpcomingEvents() {
+export function useEvent(id: number, lang?: string) {
     return useQuery({
-        queryKey: ['events', 'upcoming'],
-        queryFn: () => eventsApi.upcoming().then(r => r.data),
+        queryKey: ['events', id, lang],
+        queryFn: () => eventsApi.show(id, { lang }).then(r => r.data),
+        enabled: !!id,
+    })
+}
+
+export function useUpcomingEvents(lang?: string) {
+    return useQuery({
+        queryKey: ['events', 'upcoming', lang],
+        queryFn: () => eventsApi.upcoming().then(r => {
+            // Upcoming events doesn't support lang natively in current backend logic 
+            // but we can pass it if we update upcoming() too.
+            // For now, let's keep it simple.
+            return r.data;
+        }),
+    })
+}
+
+export function useCreateEvent() {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (data: FormData) => eventsApi.store(data).then(r => r.data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['events'] })
+        },
+    })
+}
+
+export function useUpdateEvent() {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ id, data }: { id: number; data: FormData }) =>
+            eventsApi.update(id, data).then(r => r.data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['events'] })
+        },
+    })
+}
+
+export function useDeleteEvent() {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (id: number) => eventsApi.delete(id).then(r => r.data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['events'] })
+        },
     })
 }
 
@@ -119,6 +163,54 @@ export function useImportSchedule() {
         mutationFn: (file: File) => adminApi.importSchedule(file).then(r => r.data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['schedule'] })
+        },
+    })
+}
+
+export function useImportStudents() {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (file: File) => adminApi.importStudents(file).then(r => r.data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
+        },
+    })
+}
+
+export function useFaqs() {
+    return useQuery({
+        queryKey: ['admin', 'faqs'],
+        queryFn: () => adminApi.getFaqs().then(r => r.data),
+    })
+}
+
+export function useCreateFaq() {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (data: any) => adminApi.createFaq(data).then(r => r.data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'faqs'] })
+        },
+    })
+}
+
+export function useUpdateFaq() {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: ({ id, data }: { id: number; data: any }) =>
+            adminApi.updateFaq(id, data).then(r => r.data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'faqs'] })
+        },
+    })
+}
+
+export function useDeleteFaq() {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (id: number) => adminApi.deleteFaq(id).then(r => r.data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin', 'faqs'] })
         },
     })
 }

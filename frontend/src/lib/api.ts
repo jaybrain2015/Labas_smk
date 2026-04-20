@@ -35,12 +35,14 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        const isLoginRequest = error.config?.url?.endsWith('/auth/login');
+        if (error.response?.status === 401 && !isLoginRequest) {
             useAuthStore.getState().logout()
             window.location.href = '/login'
         }
         return Promise.reject(error)
     }
+
 )
 
 export default api
@@ -57,7 +59,12 @@ export const authApi = {
         api.post('/auth/register', data),
     logout: () => api.post('/auth/logout'),
     me: () => api.get('/auth/me'),
+    forgotPassword: (email: string) =>
+        api.post('/auth/forgot-password', { email }),
+    resetPassword: (data: any) =>
+        api.post('/auth/reset-password', data),
 }
+
 
 // Schedule
 export const scheduleApi = {
@@ -74,16 +81,56 @@ export const roomsApi = {
 
 // Events
 export const eventsApi = {
-    all: (params?: { category?: string }) =>
+    all: (params?: { category?: string; is_editorial?: boolean; lang?: string }) =>
         api.get('/events', { params }),
+    show: (id: number, params?: { lang?: string }) => api.get(`/events/${id}`, { params }),
     upcoming: () => api.get('/events/upcoming'),
+    store: (data: FormData) => api.post('/events', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+    update: (id: number, data: FormData) => {
+        // Laravel doesn't support multipart/form-data for PUT/PATCH directly via FormData
+        // So we use POST with _method=PUT
+        data.append('_method', 'PUT')
+        return api.post(`/events/${id}`, data, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+    },
+    delete: (id: number) => api.delete(`/events/${id}`),
 }
 
 // Chat
 export const chatApi = {
     send: (message: string) =>
         api.post('/chat', { message }),
+    stream: async (message: string, onChunk: (text: string) => void) => {
+        const token = useAuthStore.getState().token
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/chat/stream`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'text/plain',
+            },
+            body: JSON.stringify({ message }),
+        })
+
+        if (!response.ok) throw new Error('Failed to start stream')
+
+        const reader = response.body?.getReader()
+        const decoder = new TextDecoder()
+
+        if (reader) {
+            while (true) {
+                const { done, value } = await reader.read()
+                if (done) break
+                const chunk = decoder.decode(value, { stream: true })
+                onChunk(chunk)
+            }
+        }
+    },
     history: () => api.get('/chat/history'),
+    clearHistory: () => api.delete('/chat/history'),
 }
 
 // Course Chat
@@ -103,5 +150,16 @@ export const adminApi = {
             headers: { 'Content-Type': 'multipart/form-data' },
         })
     },
+    importStudents: (file: File) => {
+        const formData = new FormData()
+        formData.append('file', file)
+        return api.post('/admin/students/import', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        })
+    },
     stats: () => api.get('/admin/stats'),
+    getFaqs: () => api.get('/admin/faqs'),
+    createFaq: (data: any) => api.post('/admin/faqs', data),
+    updateFaq: (id: number, data: any) => api.put(`/admin/faqs/${id}`, data),
+    deleteFaq: (id: number) => api.delete(`/admin/faqs/${id}`),
 }

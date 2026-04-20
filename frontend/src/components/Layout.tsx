@@ -4,17 +4,22 @@ import { useAuthStore } from '../store/authStore'
 import Sidebar from './Sidebar'
 import { Bell } from 'lucide-react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
+import LanguageSelector from './LanguageSelector'
+import { useTranslation, Language } from '../lib/translations'
 
-const pageTitles: Record<string, string> = {
-    '/': 'Dashboard',
-    '/dashboard': 'Dashboard',
-    '/chat': 'AI Chat',
-    '/schedule': 'Schedule',
-    '/rooms': 'Rooms',
-    '/events': 'Events',
-    '/settings': 'Settings',
-    '/admin': 'Admin',
+
+
+const pageTitleKeys: Record<string, string> = {
+    '/': 'dashboard',
+    '/dashboard': 'dashboard',
+    '/chat': 'chat',
+    '/schedule': 'schedule',
+    '/rooms': 'rooms',
+    '/events': 'events',
+    '/settings': 'settings',
+    '/admin': 'admin',
 }
+
 
 const pageVariants: Variants = {
     initial: {
@@ -42,8 +47,11 @@ const pageVariants: Variants = {
 export default function Layout() {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const { user } = useAuthStore()
+    const { t } = useTranslation(user?.language_preference as Language)
     const location = useLocation()
-    const pageTitle = pageTitles[location.pathname] || 'Dashboard'
+    const titleKey = pageTitleKeys[location.pathname] || 'dashboard'
+    const pageTitle = (t as any)[titleKey] || titleKey
+
 
     return (
         <div className="min-h-screen bg-bg relative">
@@ -62,29 +70,36 @@ export default function Layout() {
                         <h2 className="text-sm font-medium text-text-muted uppercase tracking-widest">
                             {pageTitle}
                         </h2>
-                        <div className="flex items-center gap-4">
-                            <span className="text-sm font-medium text-text-secondary">
-                                Welcome back, <span className="text-sidebar-red font-bold">{user?.name?.split(' ')[0] || 'User'}</span>
-                            </span>
-                            <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                className="w-10 h-10 rounded-full bg-sidebar-red/10 border-2 border-white overflow-hidden shadow-sm pointer-events-auto cursor-pointer"
-                            >
-                                <img
-                                    src={`https://ui-avatars.com/api/?name=${user?.name}&background=e63946&color=fff`}
-                                    alt="avatar"
-                                    className="w-full h-full object-cover"
-                                />
-                            </motion.div>
-                            <motion.button
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="relative p-2 text-text-secondary hover:text-sidebar-red transition-colors"
-                            >
-                                <Bell size={20} />
-                                <div className="absolute top-1 right-1 w-2 h-2 bg-sidebar-red rounded-full border-2 border-[#f4f7fa]" />
-                            </motion.button>
+                        <div className="flex items-center gap-3">
+                            <LanguageSelector />
+
+                            <div className="w-px h-6 bg-border mx-1 hidden sm:block" />
+
+                            <div className="flex items-center gap-4">
+                                <span className="text-sm font-medium text-text-secondary hidden sm:block">
+                                    {t.welcomeBack}, <span className="text-sidebar-red font-bold">{user?.name?.split(' ')[0] || 'User'}</span>
+                                </span>
+                                <motion.div
+                                    whileHover={{ scale: 1.05 }}
+                                    className="w-10 h-10 rounded-full bg-sidebar-red/10 border-2 border-white overflow-hidden shadow-sm pointer-events-auto cursor-pointer"
+                                >
+                                    <img
+                                        src={`https://ui-avatars.com/api/?name=${user?.name}&background=e63946&color=fff`}
+                                        alt="avatar"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </motion.div>
+                                <motion.button
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="relative p-2 text-text-secondary hover:text-sidebar-red transition-colors"
+                                >
+                                    <Bell size={20} />
+                                    <div className="absolute top-1 right-1 w-2 h-2 bg-sidebar-red rounded-full border-2 border-[#f4f7fa]" />
+                                </motion.button>
+                            </div>
                         </div>
+
                     </motion.div>
 
                     <AnimatePresence mode="wait">

@@ -6,68 +6,37 @@ from typing import Optional
 
 
 SMK_KNOWLEDGE_BASE = """
-# SMK College of Applied Sciences — Knowledge Base
+# SMK Aukštoji Mokykla — Student Knowledge Base (2025–2026)
 
-## Campus Layout
-- **Building A** (Main Building): 4 floors
-  - Floor 1: Reception, Administration offices, Student Services
-  - Floor 2: Lecture halls (A201-A210), Faculty offices
-  - Floor 3: Computer labs (A301-A308), IT department
-  - Floor 4: Seminar rooms (A401-A406), Conference room
-- **Building B**: 3 floors
-  - Floor 1: Cafeteria, Student lounge, Bookstore
-  - Floor 2: Library, Reading rooms, Study spaces
-  - Floor 3: Media labs, Art studios
+## Academic Calendar
+- **Introductory Lectures (Full-time)**: September 2–5, 2025.
+- **Introductory Lectures (Part-time/Online)**: September 16–18, 2025 (held online).
+- **Semester Start (Full-time)**: September 8, 2025.
+- **Semester Start (Part-time/Online)**: September 22, 2025.
 
-## Office Hours
-- **Administration**: Mon-Fri, 8:30-17:00
-- **Student Services**: Mon-Fri, 9:00-16:30
-- **IT Support**: Mon-Fri, 8:30-17:00
-- **Library**: Mon-Fri 8:00-20:00, Sat 10:00-16:00
-- **Cafeteria**: Mon-Fri 7:30-18:00
+## Study Modes
+- **Full-time (Dieninis)**: Contact studies in college (some online lectures possible).
+- **Part-time (Sesijinis/Nuotolinis)**: Online studies, held one week per month (except Aesthetic Cosmetology, which is hybrid).
 
-## Academic Procedures
+## Electronic Resources
+- **Classter (https://smk.classter.com/)**: Main academic system for schedules, grades, financial info, and semester plans. Access starts Sept 1st.
+- **Moodle**: E-learning environment for course materials, study schedules, and certificate requests.
+- **Student Email**: Official communication channel. Created by Sept 1st. Information sent only to @smk.lt addresses.
 
-### Exam Registration
-1. Log in to the Student Portal (portal.smk.lt)
-2. Navigate to "Examinations" → "Register for Exams"
-3. Select the exam session and desired subjects
-4. Confirm registration at least 5 working days before the exam
-5. You will receive a confirmation email
+## Financial Information
+- **Payment Deadlines**: Fall semester by September 1st; Spring semester by February 1st.
+- **Payment Method**: Recommended via Classter account for faster processing.
 
-### Grade Appeals
-1. Submit a written appeal within 3 working days after grade publication
-2. Address the appeal to the Head of Department
-3. Include: student name, ID, course name, exam date, and reason for appeal
-4. Submit via Student Services office or email: appeals@smk.lt
-5. Decision will be communicated within 5 working days
+## Campus Contacts
+- **SMK Klaipėda**: Liepų g. 83B. Tel: +370 601 74 830, +370 615 30 899. Email: alina.minceviciene@smk.lt
+- **SMK Kaunas**: Vilties g. 2. Tel: +370 604 73 638, +370 601 78 253. Email: milita.gradicke@smk.lt
+- **SMK Vilnius**: Kalvarijų g. 137E. Tel: +370 604 73 280, +370 602 28 237. Email: vilnius@smk.lt
+- **Technical Support**: indre.jonusaite@smk.lt, +370 602 28 237 (for IT login issues).
 
-### Course Enrollment
-1. Enrollment opens 2 weeks before each semester
-2. Check prerequisites in the course catalog
-3. Register through the Student Portal → "Course Registration"
-4. Maximum 30 ECTS per semester for full-time students
-5. Late enrollment requires department head approval
-
-### Academic Calendar 2025-2026
-- **Autumn Semester**: September 1 - December 20
-- **Winter Exam Session**: January 6 - January 24
-- **Spring Semester**: February 3 - May 16
-- **Summer Exam Session**: May 19 - June 6
-- **Holidays**: Dec 21 - Jan 5 (Winter), Jun 23-24 (Joninės)
-
-## Contact Information
-- **General Inquiries**: info@smk.lt, +370 5 213 5426
-- **Admissions**: admissions@smk.lt
-- **IT Helpdesk**: ithelpdesk@smk.lt, ext. 1234
-- **Student Counseling**: counseling@smk.lt
-
-## Student FAQs
-- **WiFi**: Network "SMK-Student", credentials provided at enrollment
-- **Printing**: Print stations on Floor 2 (Building A), use student card
-- **Parking**: Free parking available behind Building B, first-come basis
-- **Student Card**: Issued by Student Services, required for building access
-- **Lost & Found**: Report to reception desk, Building A Floor 1
+## General Info
+- **Student ID**: LSP (www.lsp.lt) or ISIC (www.isic.lt).
+- **Certificates**: Order via Moodle ("Pažymų užsakymas").
+- **Special Needs**: Contact the Student Office for support.
 """
 
 
@@ -103,8 +72,42 @@ def build_context(
                     f"at {event.get('location', 'TBD')}"
                 )
 
+        if user_context.get("faqs"):
+            parts.append("\n## Frequently Asked Questions (Knowledge Base)")
+            for faq in user_context["faqs"]:
+                parts.append(f"Q: {faq.get('question', '?')}\nA: {faq.get('answer', '?')}\n")
+
+        if user_context.get("programs"):
+            parts.append("\n## Available Study Programs")
+            for prog in user_context["programs"][:10]:
+                parts.append(f"- {prog.get('title', '?')} ({prog.get('degree', 'Bakalauras')}) — {prog.get('language', 'lt').upper()}")
+
+        if user_context.get("lecturers"):
+            parts.append("\n## SMK Faculty & Lecturers")
+            for lec in user_context["lecturers"][:8]:
+                programs_str = ", ".join(lec.get("programs", []))
+                parts.append(f"- {lec.get('name', '?')}: Expert in {lec.get('bio', 'Academic fields')}. Teaches: {programs_str}")
+
+        if user_context.get("news"):
+            parts.append("\n## Recent Campus News")
+            for news in user_context["news"][:5]:
+                parts.append(f"- {news.get('title', '?')} ({news.get('published_date', '?')})")
+
         if user_context.get("user_name"):
-            parts.append(f"\n## Current User: {user_context['user_name']}")
+            parts.append("\n## Active User Profile")
+            parts.append(f"- **Name**: {user_context['user_name']}")
+            if user_context.get("student_id"):
+                parts.append(f"- **Student ID**: {user_context['student_id']}")
+            if user_context.get("course"):
+                parts.append(f"- **Study Program**: {user_context['course']}")
+            if user_context.get("year"):
+                parts.append(f"- **Year**: {user_context['year']}")
+            if user_context.get("semester_level"):
+                parts.append(f"- **Semester Level**: {user_context['semester_level']}")
+            if user_context.get("role"):
+                parts.append(f"- **Role**: {user_context['role'].upper()}")
+
+            parts.append("\n> [!IMPORTANT]\n> You are currently interacting with the student described above. Use this information to personalize your responses and avoid asking them for these details.")
 
     context = "\n".join(parts)
 

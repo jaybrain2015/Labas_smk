@@ -18,6 +18,9 @@ class User extends Authenticatable
         'student_id',
         'role',
         'language_preference',
+        'course',
+        'year',
+        'semester_level',
     ];
 
     protected $hidden = [
@@ -45,6 +48,8 @@ class User extends Authenticatable
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class, 'group_name', 'student_id');
+        return $this->hasMany(Schedule::class, 'course', 'course')
+            ->where('year', $this->year)
+            ->where('semester_level', $this->semester_level);
     }
 }

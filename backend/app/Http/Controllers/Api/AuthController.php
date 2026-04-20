@@ -54,15 +54,18 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|string|in:student,lecturer',
+            'student_id' => 'nullable|string|max:50',
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role === 'lecturer' ? 'admin' : 'student', // Map lecturer to admin for now or keep as role
+            'password' => $request->password,
+            'role' => $request->role === 'lecturer' ? 'admin' : 'student',
+            'student_id' => $request->student_id,
             'language_preference' => 'lt',
         ]);
+
 
         $token = $user->createToken('smk-auth-token')->plainTextToken;
 
@@ -120,9 +123,18 @@ class AuthController extends Controller
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $user->id,
             'language_preference' => 'sometimes|string|in:en,lt,ru',
+            'current_password' => 'required_with:new_password|current_password',
+            'new_password' => 'sometimes|string|min:8|confirmed',
         ]);
 
+        if (isset($validated['new_password'])) {
+            $validated['password'] = $validated['new_password'];
+            unset($validated['new_password']);
+            unset($validated['current_password']);
+        }
+
         $user->update($validated);
+
 
         return response()->json([
             'success' => true,

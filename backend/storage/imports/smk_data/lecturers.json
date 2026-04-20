@@ -1,0 +1,73 @@
+[
+    {
+        "url": "https://smk.lt/destytojai/jolanta-kazlauskiene/",
+        "slug": "jolanta-kazlauskiene",
+        "language": "lt",
+        "lastmod": "2026-04-05T10:12:44+00:00",
+        "scraped_at": "2026-04-17T17:16:30.994923Z",
+        "name": "Dr. Jolanta Kazlauskienė",
+        "photo_url": "https://smk.lt/wp-content/uploads/2021/09/jolanta_kazlauskiene.jpg",
+        "bio": "Docentė, socialinių mokslų daktarė. Ekspertinė sritis: Verslo vadyba, rinkodara, vartotojų elgsena. Daugiau nei 15 metų akademinio darbo patirtis.",
+        "associated_programs": [
+            "Tarptautinis verslas",
+            "Marketingas ir reklamos kūrimas",
+            "Verslo kūrimas ir valdymas"
+        ],
+        "email": "jolanta.kazlauskiene@smk.lt",
+        "language_alternates": {
+            "lt": "https://smk.lt/destytojai/jolanta-kazlauskiene/"
+        }
+    },
+    {
+        "url": "https://smk.lt/destytojai/andrius-bernotas/",
+        "slug": "andrius-bernotas",
+        "language": "lt",
+        "lastmod": "2026-03-20T14:05:12+00:00",
+        "scraped_at": "2026-04-17T17:16:34.257859Z",
+        "name": "Andrius Bernotas",
+        "photo_url": "https://smk.lt/wp-content/uploads/2021/09/andrius_bernotas.jpg",
+        "bio": "Lektorius, praktikas. Ekspertinė sritis: Programavimas, IT projektų valdymas, debesų kompiuterija. Aktyviai dirba IT sektoriuje.",
+        "associated_programs": [
+            "Programavimas ir multimedija",
+            "Informacijos ir kibernetinė sauga"
+        ],
+        "email": "andrius.bernotas@smk.lt",
+        "language_alternates": {
+            "lt": "https://smk.lt/destytojai/andrius-bernotas/"
+        }
+    },
+    {
+        "url": "https://smk.lt/destytojai/rasa-bekeziene/",
+        "slug": "rasa-bekeziene",
+        "language": "lt",
+        "lastmod": "2022-11-29T14:08:45+00:00",
+        "scraped_at": "2026-04-17T17:17:13.364283Z",
+        "name": "Rasa Bekežienė",
+        "photo_url": null,
+        "bio": null,
+        "associated_programs": [
+            "Teisė"
+        ],
+        "email": null,
+        "language_alternates": {
+            "lt": "https://smk.lt/destytojai/rasa-bekeziene/"
+        }
+    },
+    {
+        "url": "https://smk.lt/destytojai/simas-buziliauskas/",
+        "slug": "simas-buziliauskas",
+        "language": "lt",
+        "lastmod": "2022-11-29T14:06:43+00:00",
+        "scraped_at": "2026-04-17T17:17:19.465941Z",
+        "name": "Simas Buziliauskas",
+        "photo_url": null,
+        "bio": "Kūrybos ir pramogų industrijų ekspertas, renginių vedėjas, prodiuseris.",
+        "associated_programs": [
+            "Kūrybos ir pramogų industrijos"
+        ],
+        "email": null,
+        "language_alternates": {
+            "lt": "https://smk.lt/destytojai/simas-buziliauskas/"
+        }
+    }
+]

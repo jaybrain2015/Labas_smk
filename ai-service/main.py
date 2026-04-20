@@ -3,7 +3,9 @@ Labas SMK — AI Service
 FastAPI microservice for AI-powered campus assistant.
 """
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
+
 from models.schemas import ChatRequest, ChatResponse, HealthResponse
 from services import ai_service
 from config import get_settings
@@ -55,6 +57,44 @@ async def chat(request: ChatRequest):
         detected_language=result.get("detected_language", "en"),
         suggestions=result.get("suggestions", []),
     )
+
+
+@app.post("/translate")
+async def translate(request: dict):
+    """
+    Translate text or object to target language.
+    Expects: {"text": "...", "target_language": "..."} or {"data": {...}, "target_language": "..."}
+    """
+    text = request.get("text")
+    data = request.get("data")
+    items = request.get("items")
+    target_lang = request.get("target_language", "en")
+
+    result = await ai_service.translate(
+        text=text,
+        data=data,
+        items=items,
+        target_language=target_lang,
+    )
+
+    return result
+
+
+@app.post("/chat/stream")
+async def chat_stream(request: ChatRequest):
+    """
+    Process a chat message and return an AI-powered streaming response.
+    """
+    async def generate():
+        async for chunk in ai_service.chat_stream(
+            message=request.message,
+            user_context=request.user_context,
+            language=request.language,
+        ):
+            yield chunk
+
+    return StreamingResponse(generate(), media_type="text/plain")
+
 
 
 @app.get("/")

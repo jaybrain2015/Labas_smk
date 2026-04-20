@@ -1,0 +1,549 @@
+[
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/estetine-kosmetologija/",
+        "slug": "estetine-kosmetologija",
+        "language": "lt",
+        "lastmod": "2026-04-14T21:04:21+00:00",
+        "scraped_at": "2026-04-17T17:15:33.483939Z",
+        "title": "Estetinė kosmetologija",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Estetinės kosmetologijos studijų programa skirta rengti aukštos kvalifikacijos estetinės kosmetologijos specialistus, gebančius savarankiškai teikti kosmetines paslaugas, parinkti ir taikyti tinkamas kosmetikos priemones, įrangą bei metodus, atsižvelgiant į kliento poreikius ir saugos reikalavimus, gebančius kūrybiškai taikyti inovacijas ir atsakingai veikti kintančioje rinkoje.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Anatomija, fiziologija ir patologija",
+                    "Bendroji ir estetinė chemija",
+                    "Mikrobiologija ir higiena",
+                    "Kosmetinės priemonės ir medžiagotyra",
+                    "Veido priežiūros pagrindai",
+                    "Makiažo menas",
+                    "Užsienio kalba profesinei veiklai",
+                    "Psichologija"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Dermatologija",
+                    "Kosmetinė technologija ir aparatiniai metodai",
+                    "Kūno priežiūros metodikos",
+                    "Rankų ir pėdų priežiūra",
+                    "Sveika mityba ir sveika gyvensena",
+                    "Verslo vadyba ir rinkodara",
+                    "Taikomieji tyrimai kosmetologijoje",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Specializuotos kosmetinės procedūros",
+                    "Aromaterapija ir SPA procedūros",
+                    "Gydomojo makiažo pagrindai",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti kosmetologijos kabinetuose, grožio salonuose, SPA centruose, kosmetikos gamybos ir prekybos įmonėse arba kurti privatų verslą.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/marketingas-ir-reklamos-kurimas/",
+        "slug": "marketingas-ir-reklamos-kurimas",
+        "language": "lt",
+        "lastmod": "2026-04-14T20:58:36+00:00",
+        "scraped_at": "2026-04-17T17:15:37.382910Z",
+        "title": "Marketingas ir reklamos kūrimas",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Ši programa rengia kūrybiškus marketingo ir reklamos specialistus, gebančius analizuoti rinką, kurti ir įgyvendinti marketingo strategijas, valdyti prekės ženklus, kurti įtaigų reklaminį turinį bei naudotis šiuolaikiniais skaitmeninės komunikacijos įrankiais.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Marketingo pagrindai",
+                    "Vartotojo elgsena",
+                    "Vizualioji komunikacija",
+                    "Kūrybinis rašymas",
+                    "Ekonomikos pagrindai",
+                    "Vadybos pagrindai",
+                    "Užsienio kalba (anglų/ispanų/prancūzų)",
+                    "Asmeninis tobulėjimas"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Skaitmeninis marketingas",
+                    "Prekės ženklo valdymas",
+                    "Reklamos psichologija",
+                    "Rinkos tyrimai ir duomenų analizė",
+                    "Ryšiai su visuomene",
+                    "Pardavimų valdymas",
+                    "Kūrybinių projektų valdymas",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Marketingo strategija",
+                    "Integruota marketingo komunikacija",
+                    "Medijų planavimas",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti marketingo specialistais, reklamos projektų vadovais, prekės ženklų vadovais, skaitmeninio marketingo specialistais įvairiose verslo organizacijose, reklamos bei viešųjų ryšių agentūrose arba dirbti savarankiškai.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/transporto-ir-logistikos-verslas/",
+        "slug": "transporto-ir-logistikos-verslas",
+        "language": "lt",
+        "lastmod": "2026-04-14T20:53:51+00:00",
+        "scraped_at": "2026-04-17T17:15:40.485931Z",
+        "title": "Transporto ir logistikos verslas",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių, Anglų",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Transporto ir logistikos verslo studijų programa skirta rengti logistikos specialistus, gebančius planuoti, organizuoti ir kontroliuoti krovinių gabenimo procesus, valdyti tiekimo grandines, parinkti optimalius transportavimo būdus bei užtikrinti efektyvų logistikos įmonės valdymą tarptautinėje rinkoje.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Logistikos pagrindai",
+                    "Transporto sistemų apžvalga",
+                    "Verslo ekonomika",
+                    "Matematika verslo skaičiavimams",
+                    "Vadyba",
+                    "Užsienio kalba profesijai",
+                    "Informacinės technologijos logistikoje"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Krovinių vežimo technologija",
+                    "Sandėliavimo logistika",
+                    "Tiekimo grandinės valdymas",
+                    "Transporto teisė",
+                    "Muitinės procedūros",
+                    "Ekspedijavimas ir draudimas",
+                    "Logistikos informacinės sistemos",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Tarptautinė logistika",
+                    "Transporto įmonės finansų valdymas",
+                    "Strateginis valdymas logistikoje",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti logistikos vadybininkais, ekspeditoriais, tiekimo grandinės specialistais, sandėlių vadovais transporto, gamybos ir prekybos įmonėse bei logistikos centruose.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/tarptautinis-verslas/",
+        "slug": "tarptautinis-verslas",
+        "language": "lt",
+        "lastmod": "2026-04-14T20:47:11+00:00",
+        "scraped_at": "2026-04-17T17:15:43.341859Z",
+        "title": "Tarptautinis verslas",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių, Anglų",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Tarptautinio verslo studijų programa rengia universalius verslo vadybos specialistus, suprantančius globalios rinkos dėsningumus, gebančius kurti ir plėtoti verslą tarptautinėje aplinkoje, valdyti tarpkultūrines komandas bei priimti efektyvius strateginius sprendimus.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Verslo pagrindai",
+                    "Mikro ir makroekonomika",
+                    "Verslo teisė",
+                    "Tarpkultūrinė komunikacija",
+                    "Vadyba",
+                    "Užsienio kalba (anglų k.)",
+                    "Rinkodara"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Tarptautinė rinkodara",
+                    "Finansų vadyba",
+                    "Žmogiškųjų išteklių valdymas",
+                    "Verslo procesų valdymas",
+                    "Tarptautinis verslo komunikavimas",
+                    "Elektroninis verslas",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Tarptautinės prekybos strategija",
+                    "Inovacijų ir pokyčių valdymas",
+                    "Projektų valdymas",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti padalinių vadovais, projektų vadovais, verslo plėtros specialistais tarptautinėse ir vietinėse įmonėse, kurti savo verslą.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/programavimas-ir-multimedija/",
+        "slug": "programavimas-ir-multimedija",
+        "language": "lt",
+        "lastmod": "2026-04-14T20:38:29+00:00",
+        "scraped_at": "2026-04-17T17:15:46.438591Z",
+        "title": "Programavimas ir multimedija",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Ši programa skirta rengti IT specialistus, gebančius kurti programinę įrangą, internetines svetaines, mobiliąsias aplikacijas bei multimedijos produktus, integruojant dizaino ir programavimo žinias.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Programavimo pagrindai (C#, Java)",
+                    "Diskretioji matematika",
+                    "Kompiuterių architektūra ir operacinės sistemos",
+                    "Duomenų struktūros ir algoritmai",
+                    "Grafinis dizainas",
+                    "Užsienio kalba (anglų k.)"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Objektinis programavimas",
+                    "Duomenų bazės",
+                    "Tinklo technologijos",
+                    "Internetinių technologijų kūrimas (HTML/CSS/JS)",
+                    "Multimedijos technologijos",
+                    "Vartotojo sąsajos dizainas (UI/UX)",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Mobiliųjų aplikacijų kūrimas",
+                    "Debesų kompiuterija",
+                    "Programinės įrangos inžinerija",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti programuotojais, front-end kūrėjais, multimedijos specialistais, IT projektų vadovais.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/kurybos-ir-pramogu-industrijos/",
+        "slug": "kurybos-ir-pramogu-industrijos",
+        "language": "lt",
+        "lastmod": "2026-04-14T20:29:16+00:00",
+        "scraped_at": "2026-04-17T17:15:49.492102Z",
+        "title": "Kūrybos ir pramogų industrijos",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Kūrybos ir pramogų industrijų studijų programa rengia specialistus, gebančius generuoti kūrybines idėjas, organizuoti renginius, valdyti kūrybinius projektus, prodiusuoti pramoginį turinį bei taikyti inovatyvius komunikacijos sprendimus.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Kūrybinių industrijų įvadas",
+                    "Komunikacijos psichologija",
+                    "Renginių vadyba",
+                    "Kūrybiškumo ugdymas",
+                    "Kultūros istorija",
+                    "Užsienio kalba profesijai"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Multimedijos kūrimas",
+                    "Rinkodara kūrybos sektoriuje",
+                    "Autorinės teisės ir intelektinis turtas",
+                    "Projektų valdymas",
+                    "Prodiusavimo pagrindai",
+                    "Pramogų verslo modeliai",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Skaitmeninio turinio rinkodara",
+                    "Kūrybinių verslų kūrimas",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti renginių organizatoriais, prodiuseriais, kūrybos vadovais, komunikacijos specialistais televizijoje, kine, reklamos agentūrose bei kultūros įstaigose.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/turizmas-ir-poilsis/",
+        "slug": "turizmas-ir-poilsis",
+        "language": "lt",
+        "lastmod": "2026-04-14T20:18:41+00:00",
+        "scraped_at": "2026-04-17T17:15:52.391283Z",
+        "title": "Turizmas ir poilsis",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Ši programa rengia turizmo ir aktyvaus poilsio specialistus, gebančius kurti ir parduoti turizmo paslaugas, planuoti keliones, valdyti turizmo projektus bei užtikrinti aukštą klientų aptarnavimo kokybę.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Turizmo pagrindai",
+                    "Pasaulio geografija",
+                    "Kultūros paveldas",
+                    "Klientų aptarnavimo standartai",
+                    "Vadyba",
+                    "Antroji užsienio kalba"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Kelionių organizavimas",
+                    "Turizmo marketingas",
+                    "Viešbučių ir restoranų valdymas",
+                    "Poilsio paslaugų planavimas",
+                    "E-turizmas",
+                    "Darnaus turizmo plėtra",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Turizmo verslo strategija",
+                    "Kokybės valdymas",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti turizmo informacijos centruose, kelionių agentūrose, viešbučiuose, kurti savo turizmo verslą.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/bendrosios-praktikos-slauga/",
+        "slug": "bendrosios-praktikos-slauga",
+        "language": "lt",
+        "lastmod": "2026-04-14T20:12:35+00:00",
+        "scraped_at": "2026-04-17T17:15:55.432851Z",
+        "title": "Bendrosios praktikos slauga",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3.5 m.)",
+        "language_of_instruction": "Lietuvių",
+        "location": "Vilnius, Klaipėda",
+        "description": "Programos tikslas – rengti bendrosios praktikos slaugytojus, gebančius planuoti ir teikti slaugos paslaugas, dirbti komandoje su kitais sveikatos priežiūros specialistais bei skatinti visuomenės sveikatą.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Anatomija ir histologija",
+                    "Fiziologija",
+                    "Slaugos teorija ir pagrindai",
+                    "Bioetika",
+                    "Mitybos pagrindai",
+                    "Pirmoji medicinos pagalba"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Vidaus ligų slauga",
+                    "Chirurginė slauga",
+                    "Vaikų ligų slauga",
+                    "Farmakologija",
+                    "Gerontologinė slauga",
+                    "Infekcinė kontrolė",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III ir IV kursas",
+                "subjects": [
+                    "Psichikos sveikatos slauga",
+                    "Skubioji medicinos pagalba",
+                    "Reabilitacijos pagrindai",
+                    "Bendruomenės slauga",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti ligoninėse, poliklinikose, slaugos namuose, bendruomenės sveikatos centruose.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/teise/",
+        "slug": "teise",
+        "language": "lt",
+        "lastmod": "2026-03-31T09:12:44+00:00",
+        "scraped_at": "2026-04-17T17:15:58.391206Z",
+        "title": "Teisė",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Teisės studijų programa rengia teisininkus – praktikus, gebančius taikyti teisės normas, rengti teisinius dokumentus, atstovauti asmens ir organizacijų interesams bei spręsti teisinius ginčus.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Teisės teorija",
+                    "Konstitucinė teisė",
+                    "Civilinė teisė (Bendroji dalis)",
+                    "Šeimos teisė",
+                    "Lotynų kalba teisininkams",
+                    "Logika"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Baudžiamoji teisė",
+                    "Darbo teisė",
+                    "Administracinė teisė",
+                    "Civilinis procesas",
+                    "Sutarčių teisė",
+                    "Verslo teisė",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Europos Sąjungos teisė",
+                    "Intelektualinės nuosavybės teisė",
+                    "Ginčų sprendimo būdai",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti teisininkais įmonėse, antstolių, notarų biuruose, teismuose bei valstybės institucijose.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    },
+    {
+        "url": "https://smk.lt/studijos/bakalauro-studijos/skaitmenine-komunikacija/",
+        "slug": "skaitmenine-komunikacija",
+        "language": "lt",
+        "lastmod": "2026-03-31T08:58:36+00:00",
+        "scraped_at": "2026-04-17T17:16:01.382910Z",
+        "title": "Skaitmeninė komunikacija",
+        "degree": "Profesinis bakalauras",
+        "mode": "Nuolatinės studijos (3 m.), Ištęstinės studijos (4 m.)",
+        "language_of_instruction": "Lietuvių",
+        "location": "Vilnius, Kaunas, Klaipėda",
+        "description": "Ši programa rengia komunikacijos specialistus, gebančius valdyti informacijos srautus skaitmeninėje erdvėje, kurti turinį socialiniams tinklams bei valdyti organizacijos reputaciją internete.",
+        "modules": [
+            {
+                "title": "I kursas",
+                "subjects": [
+                    "Komunikacijos tėorija",
+                    "Žurnalistikos pagrindai",
+                    "Vaizdo ir garso technologijos",
+                    "Sociologija",
+                    "Kūrybinis rašymas",
+                    "Informacinės technologijos"
+                ]
+            },
+            {
+                "title": "II kursas",
+                "subjects": [
+                    "Socialinių tinklų valdymas",
+                    "Skaitmeninė rinkodara",
+                    "Krizių komunikacija",
+                    "Vartotojų elgsena internete",
+                    "Turinio strategija",
+                    "Duomenų analitika komunikacijoje",
+                    "Profesinė praktika"
+                ]
+            },
+            {
+                "title": "III kursas",
+                "subjects": [
+                    "Integruota komunikacija",
+                    "Prekės ženklo pasakojimas (Storytelling)",
+                    "Baigiamoji praktika",
+                    "Profesinio bakalauro baigiamasis darbas"
+                ]
+            }
+        ],
+        "career_opportunities": "Absolventai galės dirbti socialinių tinklų vadovais, komunikacijos specialistais, turinio kūrėjais viešųjų ryšių agentūrose bei įmonėse.",
+        "contacts": {
+            "name": "Studijų skyrius",
+            "email": "priemimas@smk.lt",
+            "phone": "+370 601 78491"
+        }
+    }
+]

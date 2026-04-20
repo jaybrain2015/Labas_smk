@@ -7,10 +7,17 @@ use Carbon\Carbon;
 
 class ScheduleRepository
 {
-    public function getForUser(string $groupName, ?string $dayOfWeek = null)
+    public function getForUser(?string $course, ?int $year, ?int $semesterLevel, ?string $groupName = null, ?string $dayOfWeek = null)
     {
-        $query = Schedule::with('room')
-            ->where('group_name', $groupName);
+        $query = Schedule::with('room');
+
+        if ($course && $year !== null && $semesterLevel !== null) {
+            $query->where('course', $course)
+                ->where('year', $year)
+                ->where('semester_level', $semesterLevel);
+        } elseif ($groupName) {
+            $query->where('group_name', $groupName);
+        }
 
         if ($dayOfWeek) {
             $query->where('day_of_week', $dayOfWeek);
@@ -21,25 +28,33 @@ class ScheduleRepository
             ->get();
     }
 
-    public function getForToday(?string $groupName = null)
+    public function getForToday(?string $course = null, ?int $year = null, ?int $semesterLevel = null, ?string $groupName = null)
     {
-        $today = Carbon::now()->format('l'); // Monday, Tuesday, etc.
+        $today = Carbon::now()->format('l');
 
         $query = Schedule::with('room')
             ->where('day_of_week', $today);
 
-        if ($groupName) {
+        if ($course && $year !== null && $semesterLevel !== null) {
+            $query->where('course', $course)
+                ->where('year', $year)
+                ->where('semester_level', $semesterLevel);
+        } elseif ($groupName) {
             $query->where('group_name', $groupName);
         }
 
         return $query->orderBy('start_time')->get();
     }
 
-    public function getForWeek(?string $groupName = null)
+    public function getForWeek(?string $course = null, ?int $year = null, ?int $semesterLevel = null, ?string $groupName = null)
     {
         $query = Schedule::with('room');
 
-        if ($groupName) {
+        if ($course && $year !== null && $semesterLevel !== null) {
+            $query->where('course', $course)
+                ->where('year', $year)
+                ->where('semester_level', $semesterLevel);
+        } elseif ($groupName) {
             $query->where('group_name', $groupName);
         }
 

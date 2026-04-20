@@ -11,8 +11,9 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->string('number')->unique();
+            $table->string('name')->nullable();
             $table->integer('floor');
-            $table->string('building')->default('Building A');
+            $table->string('building')->default('Vilnius Campus');
             $table->integer('capacity')->default(30);
             $table->enum('type', ['lecture', 'lab', 'seminar'])->default('lecture');
             $table->json('equipment')->nullable();

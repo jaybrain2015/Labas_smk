@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
-import { useChatHistory, useSendMessage } from '../hooks/useApi'
+import { useChatHistory } from '../hooks/useApi'
+import { chatApi } from '../lib/api'
 import { ChatMessageSkeleton } from '../components/Skeleton'
+
 import { useAuthStore } from '../store/authStore'
+import { useTranslation, Language } from '../lib/translations'
 import {
     Send, Bot, User, Loader2,
     Paperclip, Mic, RotateCcw, MessageSquarePlus,
 } from 'lucide-react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
-
 interface Message {
     role: 'user' | 'assistant'
     content: string
@@ -15,12 +17,14 @@ interface Message {
     metadata?: any
 }
 
-const suggestedInquiries = [
+// This will be overridden in the component
+let suggestedInquiries = [
     "What time does the library close?",
     "When is the next bus to center?",
     "Show me today's lunch menu",
     "WIFI password help"
 ]
+
 
 /* ── variants ───────────────────────────────────────── */
 
@@ -54,13 +58,18 @@ const messageVariants: Variants = {
 
 export default function ChatPage() {
     const { user } = useAuthStore()
+    const { t } = useTranslation(user?.language_preference as Language)
+
+    // Override suggestions
+    suggestedInquiries = t.chatSuggested
+
     const [input, setInput] = useState('')
+
     const [messages, setMessages] = useState<Message[]>([])
     const [isTyping, setIsTyping] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const { data: historyData, isLoading } = useChatHistory()
-    const sendMutation = useSendMessage()
 
     useEffect(() => {
         if (historyData?.data?.messages) {
@@ -81,24 +90,38 @@ export default function ChatPage() {
         setInput('')
         setIsTyping(true)
 
+        // Add a placeholder for the AI response
+        const aiMsg: Message = {
+            role: 'assistant',
+            content: '',
+            timestamp: new Date().toISOString(),
+        }
+        setMessages((prev) => [...prev, aiMsg])
+
+        let fullContent = ''
+
         try {
-            const result = await sendMutation.mutateAsync(message)
-            const aiMsg: Message = {
-                role: 'assistant',
-                content: result.data?.response || 'Sorry, I couldn\'t process that request.',
-                timestamp: new Date().toISOString(),
-                metadata: result.data?.metadata
-            }
-            setMessages((prev) => [...prev, aiMsg])
-        } catch {
-            setMessages((prev) => [
-                ...prev,
-                {
-                    role: 'assistant',
-                    content: 'Sorry, something went wrong. Please try again.',
-                    timestamp: new Date().toISOString(),
-                },
-            ])
+            await chatApi.stream(message, (chunk) => {
+                fullContent += chunk
+                setMessages((prev) => {
+                    const newMessages = [...prev]
+                    const lastMsg = newMessages[newMessages.length - 1]
+                    if (lastMsg && lastMsg.role === 'assistant') {
+                        lastMsg.content = fullContent
+                    }
+                    return newMessages
+                })
+            })
+        } catch (error) {
+            console.error('Streaming error:', error)
+            setMessages((prev) => {
+                const newMessages = [...prev]
+                const lastMsg = newMessages[newMessages.length - 1]
+                if (lastMsg && lastMsg.role === 'assistant' && !lastMsg.content) {
+                    lastMsg.content = t.genericError || 'Something went wrong.'
+                }
+                return newMessages
+            })
         } finally {
             setIsTyping(false)
             inputRef.current?.focus()
@@ -112,6 +135,15 @@ export default function ChatPage() {
         }
     }
 
+    const handleClearHistory = async () => {
+        try {
+            await chatApi.clearHistory()
+            setMessages([])
+        } catch (error) {
+            console.error('Failed to clear history:', error)
+        }
+    }
+
     return (
         <motion.div
             variants={containerVariants}
@@ -119,37 +151,36 @@ export default function ChatPage() {
             animate="visible"
             className="flex flex-col h-[calc(100vh-8rem)] max-w-[1200px] mx-auto relative px-4"
         >
-            {/* Header Area */}
             <motion.div
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="flex items-center justify-between py-6 border-b border-slate-50 bg-white/80 backdrop-blur-md sticky top-0 z-20"
+                className="flex items-center justify-between py-6 px-10 bg-white/90 backdrop-blur-xl border border-slate-100/50 rounded-[32px] shadow-sm sticky top-4 z-20"
             >
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-heading font-black text-slate-900 tracking-tight leading-none">
-                        Academic Assistant
-                    </h1>
                     <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse" />
-                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Labas AI is online</p>
+                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">{t.aiOnline}</p>
                     </div>
                 </div>
+
 
                 <div className="flex items-center gap-3">
                     <motion.button
                         whileHover={{ backgroundColor: '#f8fafc' }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={handleClearHistory}
                         className="flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold text-slate-500 transition-all border border-transparent hover:border-slate-100"
                     >
-                        <RotateCcw size={14} /> Clear History
+                        <RotateCcw size={14} /> {t.clearHistory}
                     </motion.button>
                     <motion.button
                         whileHover={{ backgroundColor: '#f8fafc' }}
                         whileTap={{ scale: 0.95 }}
                         className="flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold text-slate-500 transition-all border border-transparent hover:border-slate-100"
                     >
-                        <MessageSquarePlus size={14} /> Feedback
+                        <MessageSquarePlus size={14} /> {t.feedback}
                     </motion.button>
+
                 </div>
             </motion.div>
 
@@ -175,11 +206,12 @@ export default function ChatPage() {
                             <Bot size={40} className="text-white" />
                         </motion.div>
                         <div className="space-y-2">
-                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">Sveiki! Hello!</h2>
+                            <h2 className="text-2xl font-black text-slate-900 tracking-tight">{t.helloHello}</h2>
                             <p className="text-slate-500 text-sm font-medium max-w-sm mx-auto leading-relaxed">
-                                I'm your SMK Campus Assistant. How can I help you navigate your academic life today?
+                                {t.aiIntro}
                             </p>
                         </div>
+
                     </motion.div>
                 ) : (
                     <div className="space-y-12 overflow-x-hidden">
@@ -200,14 +232,15 @@ export default function ChatPage() {
                                             {msg.role === 'user' ? <User size={16} className="text-slate-500" /> : <Bot size={16} className="text-white" />}
                                         </div>
                                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                                            {msg.role === 'user' ? 'Me' : 'Labas AI'}
+                                            {msg.role === 'user' ? t.me : t.labasAi}
                                         </span>
                                     </div>
 
+
                                     {/* Message Bubble */}
                                     <div className={`max-w-[85%] md:max-w-[70%] text-sm font-medium leading-relaxed relative ${msg.role === 'user'
-                                        ? 'bg-accent text-white rounded-[24px] rounded-tr-md p-6 shadow-xl shadow-accent/10'
-                                        : 'bg-white border border-slate-100 text-slate-700 rounded-[24px] rounded-tl-md p-7 shadow-sm'
+                                        ? 'bg-accent text-white rounded-[32px] rounded-tr-md p-6 shadow-xl shadow-accent/10'
+                                        : 'bg-white border border-slate-100 text-slate-700 rounded-[32px] rounded-tl-md p-7 shadow-sm'
                                         }`}>
                                         {msg.content}
 
@@ -215,18 +248,19 @@ export default function ChatPage() {
                                         {msg.role === 'assistant' && msg.content.includes('Room 305') && (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                                                 <div className="bg-slate-50 p-5 rounded-2xl border-l-4 border-accent space-y-2">
-                                                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-wide">Route Instructions</h4>
+                                                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-wide">{t.routeInstructions}</h4>
                                                     <p className="text-[12px] text-slate-500 leading-snug">Take the elevator near the lobby to the 3rd floor, then turn left past the lounge area.</p>
                                                 </div>
                                                 <div className="bg-slate-50 p-5 rounded-2xl space-y-3">
-                                                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-wide">Status</h4>
+                                                    <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-wide">{t.status}</h4>
                                                     <div className="flex items-center justify-between">
-                                                        <span className="px-2 py-0.5 bg-lime-400 text-[9px] font-black text-slate-900 uppercase rounded">Open</span>
-                                                        <span className="text-[10px] font-bold text-slate-400">Next class: 14:30</span>
+                                                        <span className="px-2 py-0.5 bg-lime-400 text-[9px] font-black text-slate-900 uppercase rounded">{t.open}</span>
+                                                        <span className="text-[10px] font-bold text-slate-400">{t.nextClass.replace('{time}', '14:30')}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         )}
+
                                     </div>
                                 </motion.div>
                             ))}
@@ -236,7 +270,7 @@ export default function ChatPage() {
 
                 {/* Suggested Inquiries (Floating style) */}
                 <motion.div variants={containerVariants} className="space-y-4 pt-10 text-center">
-                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-wide">Suggested Inquiries</p>
+                    <p className="text-[9px] font-black text-slate-300 uppercase tracking-wide">{t.suggestedInquiriesLabel}</p>
                     <div className="flex flex-wrap justify-center gap-2 px-8">
                         {suggestedInquiries.map((chip, i) => (
                             <motion.button
@@ -263,7 +297,7 @@ export default function ChatPage() {
                 <motion.div
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    className="max-w-[800px] mx-auto bg-white border border-slate-100 rounded-[28px] p-2 flex items-center gap-2 shadow-2xl shadow-slate-900/10 focus-within:ring-4 focus-within:ring-accent/5 transition-all"
+                    className="max-w-[800px] mx-auto bg-white border border-slate-100 rounded-[32px] p-2 flex items-center gap-2 shadow-2xl shadow-slate-900/10 focus-within:ring-4 focus-within:ring-accent/5 transition-all"
                 >
                     <motion.button
                         whileHover={{ scale: 1.1, color: '#475569' }}
@@ -278,7 +312,7 @@ export default function ChatPage() {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Ask Labas AI anything..."
+                        placeholder={t.askAnythingPlaceholder}
                         className="flex-1 bg-transparent py-4 text-sm font-medium outline-none text-slate-800 placeholder:text-slate-300 px-2"
                         disabled={isTyping}
                     />

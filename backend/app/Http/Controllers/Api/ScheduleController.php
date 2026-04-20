@@ -18,7 +18,12 @@ class ScheduleController extends Controller
     public function my(Request $request)
     {
         $user = $request->user();
-        $schedule = $this->scheduleRepo->getForToday($user->student_id);
+        $schedule = $this->scheduleRepo->getForToday(
+            $user->course,
+            $user->year,
+            $user->semester_level,
+            $user->student_id
+        );
 
         return response()->json([
             'success' => true,
@@ -39,7 +44,12 @@ class ScheduleController extends Controller
     public function week(Request $request)
     {
         $user = $request->user();
-        $schedule = $this->scheduleRepo->getForWeek($user->student_id);
+        $schedule = $this->scheduleRepo->getForWeek(
+            $user->course,
+            $user->year,
+            $user->semester_level,
+            $user->student_id
+        );
 
         return response()->json([
             'success' => true,

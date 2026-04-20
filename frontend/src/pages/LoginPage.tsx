@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { authApi, getCsrfCookie } from '../lib/api'
+import { useTranslation, Language } from '../lib/translations'
+
 import campusBg from '../assets/campus-bg.webp'
 import labsLogo from '../assets/labs-smk-logo.webp'
 import './Login.css'
@@ -12,8 +14,10 @@ const COLS = 80, ROWS = 18
 type BtnState = 'idle' | 'loading' | 'success' | 'error'
 
 function LoginPage() {
-    const { setAuth } = useAuthStore()
+    const { setAuth, user } = useAuthStore()
     const navigate = useNavigate()
+    const { t } = useTranslation((user?.language_preference as Language) || 'en')
+
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -25,19 +29,9 @@ function LoginPage() {
     const [btnPressed, setBtnPressed] = useState(false)
     const [btnState, setBtnState] = useState<BtnState>('idle')
     const [isFormHovered, setIsFormHovered] = useState(false)
+    const hasFlippedRef = useRef(false)
 
-    const unflipTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const clearTimer = () => {
-        if (unflipTimer.current) {
-            clearTimeout(unflipTimer.current)
-            unflipTimer.current = null
-        }
-    }
-
-    useEffect(() => {
-        return () => clearTimer()
-    }, [])
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const simRef = useRef<{
@@ -233,10 +227,11 @@ function LoginPage() {
 
     const validate = () => {
         const e: Record<string, string> = {}
-        if (!email) e.email = 'Email is required'
-        if (!password) e.password = 'Password is required'
+        if (!email) e.email = t.emailRequired
+        if (!password) e.password = t.passwordRequired
         return e
     }
+
 
     const handleLogin = async () => {
         if (btnState !== 'idle') return
@@ -253,14 +248,15 @@ function LoginPage() {
                 setTimeout(() => navigate('/dashboard'), 900)
             } else {
                 setBtnState('error')
-                setErrors({ api: response.message || 'Login failed' })
+                setErrors({ api: response.message || t.loginFailed })
                 setTimeout(() => setBtnState('idle'), 820)
             }
         } catch (err: any) {
             setBtnState('error')
-            setErrors({ api: err.response?.data?.message || 'Login failed. Please check your credentials.' })
+            setErrors({ api: err.response?.data?.message || t.credentialsError })
             setTimeout(() => setBtnState('idle'), 820)
         }
+
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -271,65 +267,55 @@ function LoginPage() {
         <>
             <div
                 className={`login-page ${isFlipped ? 'login-page--flipped' : ''}`}
-                onMouseLeave={() => {
-                    clearTimer()
-                    setIsFlipped(false)
+                onMouseEnter={() => {
+                    if (!hasFlippedRef.current) {
+                        hasFlippedRef.current = true
+                        setIsFlipped(true)
+                    }
                 }}
             >
                 {/* ---- Left: form ---- */}
                 <div className="login-left">
                     <div className="login-heading">
                         <h1>
-                            Welcome Back, <span>Please login</span>
+                            {t.welcomeBackLogin} <span>{t.pleaseLogin}</span>
                         </h1>
-                        <p>to your account</p>
+                        <p>{t.toYourAccount}</p>
                     </div>
+
 
                     {errors.api && <div className="login-error">{errors.api}</div>}
 
                     <div
                         className={`login-form-card ${isFormHovered ? 'login-form-card--hover' : ''}`}
-                        onMouseEnter={() => {
-                            clearTimer()
-                            setIsFormHovered(true)
-                            unflipTimer.current = setTimeout(() => {
-                                setIsFlipped(true)
-                            }, 600)
-                        }}
-                        onMouseLeave={() => {
-                            clearTimer()
-                            setIsFormHovered(false)
-                        }}
+                        onMouseEnter={() => setIsFormHovered(true)}
+                        onMouseLeave={() => setIsFormHovered(false)}
                     >
                         <div className="login-field">
-                            <label>Email Address</label>
+                            <label>{t.emailAddress}</label>
                             <input
                                 type="email"
                                 value={email}
-                                onChange={(e) => {
-                                    clearTimer()
-                                    setEmail(e.target.value)
-                                }}
+                                onChange={(e) => setEmail(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="you@example.com"
+                                placeholder={t.emailPlaceholder}
                             />
+
                             {errors.email && (
                                 <p className="login-field-error">{errors.email}</p>
                             )}
                         </div>
 
                         <div className="login-field">
-                            <label>Password</label>
+                            <label>{t.password}</label>
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
-                                onChange={(e) => {
-                                    clearTimer()
-                                    setPassword(e.target.value)
-                                }}
+                                onChange={(e) => setPassword(e.target.value)}
                                 onKeyDown={handleKeyDown}
-                                placeholder="••••••••••••"
+                                placeholder={t.passwordPlaceholder}
                             />
+
                             <button
                                 type="button"
                                 className="login-eye-btn"
@@ -362,10 +348,17 @@ function LoginPage() {
                                 checked={rememberMe}
                                 onChange={() => setRememberMe(!rememberMe)}
                             />
-                            Remember me
+                            {t.rememberMe}
                         </label>
-                        <button className="login-forgot">Forgot password?</button>
+                        <button
+                            className="login-forgot"
+                            onClick={() => navigate('/forgot-password')}
+                        >
+                            {t.forgotPassword}
+                        </button>
+
                     </div>
+
 
                     {/* FLUID GLASS BUTTON */}
                     <div className="login-btn-wrap">
@@ -394,26 +387,28 @@ function LoginPage() {
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: .75 }}>
                                         <rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0110 0v4" strokeLinecap="round" />
                                     </svg>
-                                    Login
+                                    {t.loginBtn}
                                 </span>
                                 <span className="login-label">
                                     <span className="login-spinner" />
-                                    Signing in…
+                                    {t.signingIn}
                                 </span>
                                 <span className="login-label">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                         <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
-                                    Welcome!
+                                    {t.welcome}
                                 </span>
+
                             </span>
                         </button>
                     </div>
 
                     <p className="login-signup-link">
-                        No account?{' '}
-                        <button onClick={() => navigate('/signup')}>Create one</button>
+                        {t.noAccount}{' '}
+                        <button onClick={() => navigate('/signup')}>{t.createOne}</button>
                     </p>
+
 
                     <div className="login-logo">
                         <img
@@ -425,15 +420,7 @@ function LoginPage() {
                 </div>
 
                 {/* ---- Right: campus image ---- */}
-                <div
-                    className="login-right"
-                    onMouseEnter={() => {
-                        clearTimer()
-                        unflipTimer.current = setTimeout(() => {
-                            setIsFlipped(false)
-                        }, 120000)
-                    }}
-                >
+                <div className="login-right">
                     <img src={campusBg} alt="Campus" />
                 </div>
             </div>

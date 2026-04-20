@@ -8,9 +8,15 @@ import {
 } from 'lucide-react'
 import CourseChat from '../components/CourseChat'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
+import { useTranslation, Language } from '../lib/translations'
+import { useAuthStore } from '../store/authStore'
 
-const DAYS_SHORT = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
-const DAYS_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+
+// These will be overridden by translations in the component
+// Days and Months are handled by translations in the component
+
+
 
 /* ── variants ───────────────────────────────────────── */
 
@@ -75,13 +81,23 @@ const drawerVariants: Variants = {
 /* ── component ──────────────────────────────────────── */
 
 export default function SchedulePage() {
+    const { user } = useAuthStore()
+    const { t } = useTranslation(user?.language_preference as Language)
+
+    // Override day arrays with translated versions
+    const DAYS_SHORT = t.daysShort
+    const DAYS_FULL = t.days
+
+
     const [view, setView] = useState<'today' | 'week'>('today')
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [activeChat, setActiveChat] = useState<{ subject: string; groupName: string } | null>(null)
     const { data: scheduleData, isLoading } = useWeekSchedule()
+
     const schedule = scheduleData?.data || []
 
-    const currentDayFull = selectedDate.toLocaleDateString('en-US', { weekday: 'long' })
+    const currentDayFull = DAYS_FULL[selectedDate.getDay()]
+
 
     const weekDates = useMemo(() => {
         const d = new Date(selectedDate)
@@ -123,11 +139,12 @@ export default function SchedulePage() {
                 {/* Academic Pulse Header */}
                 <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-4">
                     <div className="space-y-1">
-                        <p className="text-[10px] font-bold text-accent uppercase tracking-wide">Weekly Schedule</p>
+                        <p className="text-[10px] font-bold text-accent uppercase tracking-wide">{t.weeklySchedule}</p>
                         <h1 className="text-5xl font-heading font-black text-slate-900 tracking-tight leading-none">
-                            Academic <span className="text-accent">Pulse.</span>
+                            {t.academicPulse.split(' ')[0]} <span className="text-accent">{t.academicPulse.split(' ')[1]}.</span>
                         </h1>
                     </div>
+
 
                     <div className="flex items-center bg-slate-100/80 p-1 rounded-xl border border-slate-200/50 backdrop-blur-sm shadow-sm">
                         <motion.button
@@ -135,15 +152,16 @@ export default function SchedulePage() {
                             onClick={() => setView('today')}
                             className={`px-6 py-2 rounded-lg text-xs font-bold transition-all ${view === 'today' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
                         >
-                            Today
+                            {t.today}
                         </motion.button>
                         <motion.button
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setView('week')}
                             className={`px-6 py-2 rounded-lg text-xs font-bold transition-all ${view === 'week' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
                         >
-                            Full Week
+                            {t.fullWeek}
                         </motion.button>
+
                     </div>
                 </motion.div>
 
@@ -217,8 +235,10 @@ export default function SchedulePage() {
                                         className="flex flex-col items-center justify-center py-20 bg-slate-50/50 rounded-[32px] border border-dashed border-slate-200"
                                     >
                                         <Calendar size={40} className="text-slate-200 mb-4" />
-                                        <p className="text-slate-400 font-bold uppercase text-xs tracking-wide">No classes scheduled</p>
+                                        <p className="text-slate-400 font-bold uppercase text-xs tracking-wide">{t.noClassesToday}</p>
                                     </motion.div>
+
+
                                 ) : (
                                     getScheduleForDay(currentDayFull).map((item: any, idx: number) => {
                                         const isLive = isCurrentTimeInRange(item.start_time, item.end_time)
@@ -251,8 +271,9 @@ export default function SchedulePage() {
                                                         {/* Time & Type */}
                                                         <div className="space-y-1 shrink-0 w-24">
                                                             <p className={`text-sm font-black ${isLive ? 'text-accent' : 'text-slate-900'}`}>{item.start_time?.slice(0, 5)} — {item.end_time?.slice(0, 5)}</p>
-                                                            <p className={`text-[10px] font-bold uppercase tracking-wide ${isLive ? 'text-slate-400' : 'text-slate-300'}`}>LECTURE</p>
+                                                            <p className={`text-[10px] font-bold uppercase tracking-wide ${isLive ? 'text-slate-400' : 'text-slate-300'}`}>{t.lecture}</p>
                                                         </div>
+
 
                                                         {/* Left border accent */}
                                                         <div className={`h-12 w-1.5 rounded-full shrink-0 ${isLive ? 'bg-accent' : 'bg-red-200'}`} />
@@ -262,14 +283,16 @@ export default function SchedulePage() {
                                                             {isLive && (
                                                                 <div className="flex items-center gap-2 mb-1">
                                                                     <div className="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse" />
-                                                                    <span className="text-[10px] font-black text-lime-400 uppercase tracking-wide">Live Now</span>
+                                                                    <span className="text-[10px] font-black text-lime-400 uppercase tracking-wide">{t.liveNow}</span>
                                                                 </div>
                                                             )}
+
                                                             <h3 className={`text-xl font-black tracking-tight leading-tight truncate pr-4 ${isLive ? 'text-white' : 'text-slate-900'}`}>{item.subject}</h3>
                                                             <div className={`flex flex-wrap items-center gap-6 text-[11px] font-bold ${isLive ? 'text-slate-400' : 'text-slate-400'}`}>
-                                                                <span className="flex items-center gap-2 uppercase tracking-wider"><MapPin size={14} className={isLive ? 'text-accent' : 'text-red-300'} /> Room {item.room?.number || '—'}</span>
+                                                                <span className="flex items-center gap-2 uppercase tracking-wider"><MapPin size={14} className={isLive ? 'text-accent' : 'text-red-300'} /> {t.roomLabel} {item.room?.number || '—'}</span>
                                                                 <span className="flex items-center gap-2 uppercase tracking-wider"><Users size={14} className={isLive ? 'text-accent' : 'text-red-300'} /> {item.lecturer}</span>
                                                             </div>
+
                                                         </div>
                                                     </div>
 
@@ -281,8 +304,9 @@ export default function SchedulePage() {
                                                                 whileTap={{ scale: 0.95 }}
                                                                 className="px-6 py-3 bg-lime-400 text-slate-900 font-black text-[11px] uppercase tracking-wide rounded-xl transition-all shadow-lg shadow-lime-400/20"
                                                             >
-                                                                Mark Attendance
+                                                                {t.markAttendance}
                                                             </motion.button>
+
                                                         ) : (
                                                             <>
                                                                 <div className="flex items-center gap-2 mr-2">
@@ -290,7 +314,7 @@ export default function SchedulePage() {
                                                                         whileHover={{ scale: 1.1, backgroundColor: '#f1f5f9' }}
                                                                         whileTap={{ scale: 0.9 }}
                                                                         className="p-2.5 rounded-lg bg-slate-50 text-slate-400 transition-colors"
-                                                                        title="Download Material"
+                                                                        title={t.downloadMaterial}
                                                                     >
                                                                         <FileText size={18} />
                                                                     </motion.button>
@@ -298,10 +322,11 @@ export default function SchedulePage() {
                                                                         whileHover={{ scale: 1.1, backgroundColor: '#f1f5f9' }}
                                                                         whileTap={{ scale: 0.9 }}
                                                                         className="p-2.5 rounded-lg bg-slate-50 text-slate-400 transition-colors"
-                                                                        title="Join Link"
+                                                                        title={t.joinLink}
                                                                     >
                                                                         <LinkIcon size={18} />
                                                                     </motion.button>
+
                                                                 </div>
                                                                 <motion.button
                                                                     whileHover={{ scale: 1.1 }}
@@ -322,8 +347,9 @@ export default function SchedulePage() {
                                                         <div className="absolute -left-[11px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-slate-200" />
                                                         <div className="p-6 border-2 border-dashed border-slate-100 rounded-[28px] flex items-center justify-center gap-4 bg-slate-50/20">
                                                             <Coffee size={20} className="text-slate-300" />
-                                                            <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">Self-Study & Social Window</span>
+                                                            <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wide">{t.selfStudyWindow}</span>
                                                         </div>
+
                                                     </motion.div>
                                                 )}
                                             </motion.div>
@@ -348,8 +374,9 @@ export default function SchedulePage() {
                             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-accent">
                                 <CheckCircle2 size={24} />
                             </div>
-                            <h2 className="text-xl font-black text-slate-900">Deadlines</h2>
+                            <h2 className="text-xl font-black text-slate-900">{t.deadlines}</h2>
                         </div>
+
                         <button className="p-2 text-slate-400">
                             <MoreVertical size={20} />
                         </button>
@@ -362,8 +389,9 @@ export default function SchedulePage() {
                             className="bg-white p-6 rounded-2xl shadow-xl shadow-slate-200/40 space-y-4 border border-slate-100"
                         >
                             <div className="flex justify-between items-start">
-                                <p className="text-[10px] font-black text-red-500 uppercase tracking-wide">Due Tomorrow</p>
+                                <p className="text-[10px] font-black text-red-500 uppercase tracking-wide">{t.dueTomorrow}</p>
                                 <div className="p-1.5 bg-red-50 text-red-500 rounded-lg">
+
                                     <Bell size={14} />
                                 </div>
                             </div>
@@ -372,9 +400,10 @@ export default function SchedulePage() {
                             {/* Progress bar */}
                             <div className="space-y-1.5 pt-2">
                                 <div className="flex justify-between text-[9px] font-bold text-slate-400">
-                                    <span>Progress</span>
+                                    <span>{t.progress}</span>
                                     <span>80%</span>
                                 </div>
+
                                 <div className="h-1.5 bg-slate-50 rounded-full overflow-hidden">
                                     <motion.div
                                         initial={{ width: 0 }}
@@ -390,9 +419,10 @@ export default function SchedulePage() {
                             whileHover={{ opacity: 1 }}
                             className="bg-white p-6 rounded-2xl shadow-sm space-y-3 opacity-60 border border-slate-100"
                         >
-                            <p className="text-[10px] font-black text-red-300 uppercase tracking-wide">In 3 Days</p>
+                            <p className="text-[10px] font-black text-red-300 uppercase tracking-wide">{t.in3Days}</p>
                             <h3 className="text-sm font-bold text-slate-700 leading-tight">Cognitive Psychology Essay - Research Phase</h3>
                         </motion.div>
+
                     </div>
 
                     <motion.button
@@ -400,8 +430,9 @@ export default function SchedulePage() {
                         whileTap={{ scale: 0.98 }}
                         className="w-full py-4 border-2 border-slate-200 border-dashed rounded-2xl text-[10px] font-black text-slate-400 uppercase tracking-wide flex items-center justify-center gap-2 transition-all"
                     >
-                        View All Tasks <ArrowRight size={14} />
+                        {t.viewAllTasks} <ArrowRight size={14} />
                     </motion.button>
+
                 </motion.div>
             </aside>
 

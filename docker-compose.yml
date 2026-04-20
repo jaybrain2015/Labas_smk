@@ -49,7 +49,7 @@ services:
       APP_ENV: local
       APP_DEBUG: "true"
       APP_KEY: ${APP_KEY:-base64:generated_key_here}
-      APP_URL: http://localhost:8000
+      APP_URL: http://localhost:3000
       DB_CONNECTION: pgsql
       DB_HOST: db
       DB_PORT: 5432
@@ -61,7 +61,9 @@ services:
       CACHE_DRIVER: redis
       SESSION_DRIVER: redis
       AI_SERVICE_URL: http://ai-service:8001
-      SANCTUM_STATEFUL_DOMAINS: localhost:3000,localhost,localhost:5173,localhost:80
+      FILESYSTEM_DISK: public
+      FRONTEND_URL: http://localhost:5173,http://localhost:5174,http://localhost:3000
+      SANCTUM_STATEFUL_DOMAINS: localhost:3000,localhost,localhost:5173,localhost:5174,localhost:80
     ports:
       - "8085:8000"
     volumes:
@@ -102,14 +104,15 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: smk_frontend
     restart: unless-stopped
     environment:
       VITE_API_URL: http://localhost:3000/api
       VITE_AI_URL: http://localhost:3000/ai
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     ports:
-      - "5173:5173"
+      - "5174:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules

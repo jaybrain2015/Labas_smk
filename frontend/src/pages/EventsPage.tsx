@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useEvents } from '../hooks/useApi'
 import { EventCardSkeleton } from '../components/Skeleton'
 import {
@@ -7,15 +8,10 @@ import {
     ChevronLeft, ChevronRight,
 } from 'lucide-react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
+import { useTranslation, Language } from '../lib/translations'
+import { useAuthStore } from '../store/authStore'
 
 import heroBg from '../assets/events-hero-bg.png'
-
-const categories = [
-    { value: null, label: 'All', icon: Filter },
-    { value: 'academic', label: 'Academic', icon: GraduationCap },
-    { value: 'social', label: 'Social', icon: PartyPopper },
-    { value: 'deadline', label: 'Deadlines', icon: AlertTriangle },
-]
 
 /* ── variants ───────────────────────────────────────── */
 
@@ -57,12 +53,23 @@ const cardVariants: Variants = {
     exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
 }
 
-/* ── component ──────────────────────────────────────── */
 
 export default function EventsPage() {
+    const navigate = useNavigate()
+    const { user } = useAuthStore()
+    const { t } = useTranslation(user?.language_preference as Language)
+
+    const categoriesList = useMemo(() => [
+        { value: null, label: t.categories.all, icon: Filter },
+        { value: 'academic', label: t.categories.academic, icon: GraduationCap },
+        { value: 'social', label: t.categories.social, icon: PartyPopper },
+        { value: 'deadline', label: t.categories.deadline, icon: AlertTriangle },
+    ], [t])
+
     const [category, setCategory] = useState<string | null>(null)
+
     const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth())
-    const { data: eventsData, isLoading } = useEvents(category || undefined)
+    const { data: eventsData, isLoading } = useEvents(category || undefined, undefined, user?.language_preference)
     const events = eventsData?.data || []
 
     const today = new Date()
@@ -87,14 +94,16 @@ export default function EventsPage() {
 
     const formatDate = (dateStr: string) => {
         const d = new Date(dateStr)
+        const locale = user?.language_preference === 'lt' ? 'lt-LT' : user?.language_preference === 'ru' ? 'ru-RU' : 'en-GB'
         return {
-            full: d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+            full: d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' }),
             day: d.getDate(),
-            month: d.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase(),
-            weekday: d.toLocaleDateString('en-GB', { weekday: 'short' }),
-            time: d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+            month: t.monthsShort[d.getMonth()],
+            weekday: t.daysShort[d.getDay() === 0 ? 6 : d.getDay() - 1],
+            time: d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }),
         }
     }
+
 
     const getCategoryStyles = (cat: string) => {
         switch (cat) {
@@ -122,7 +131,7 @@ export default function EventsPage() {
             {/* HERO SECTION */}
             <motion.section
                 variants={itemVariants}
-                className="relative h-[480px] rounded-[32px] overflow-hidden group shadow-2xl"
+                className="relative h-[450px] rounded-[32px] overflow-hidden group shadow-2xl"
             >
                 <motion.img
                     src={heroBg}
@@ -133,22 +142,23 @@ export default function EventsPage() {
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/40 to-transparent flex flex-col justify-center px-12 lg:px-20">
-                    <div className="max-w-2xl space-y-6">
+                    <div className="max-w-2xl space-y-4">
                         <motion.span
                             initial={{ x: -20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ delay: 0.4 }}
                             className="inline-block px-4 py-1.5 bg-[#bef264] text-slate-900 text-[10px] font-bold tracking-wide rounded-full uppercase"
                         >
-                            Featured Event
+                            {t.featuredEvent}
                         </motion.span>
+
                         {featuredEvent ? (
                             <>
                                 <motion.h1
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.5 }}
-                                    className="text-5xl lg:text-6xl font-heading font-black text-white leading-[1.1]"
+                                    className="text-4xl lg:text-5xl font-heading font-black text-white leading-[1.1]"
                                 >
                                     {featuredEvent.title}
                                 </motion.h1>
@@ -156,22 +166,24 @@ export default function EventsPage() {
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.6 }}
-                                    className="text-lg text-slate-200/90 leading-relaxed max-w-xl"
+                                    className="text-lg text-slate-200/90 leading-relaxed max-w-xl line-clamp-3"
                                 >
-                                    {featuredEvent.description || "Join us for an exclusive gathering where we explore the intersections of technology, community, and academic excellence."}
+                                    {featuredEvent.description || t.featuredEventDesc}
                                 </motion.p>
+
                                 <motion.div
                                     initial={{ y: 20, opacity: 0 }}
                                     animate={{ y: 0, opacity: 1 }}
                                     transition={{ delay: 0.7 }}
-                                    className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-4"
+                                    className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-2"
                                 >
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
+                                        onClick={() => navigate(`/events/${featuredEvent.id}`)}
                                         className="px-8 py-4 bg-accent text-white font-bold rounded-2xl transition-all shadow-lg hover:shadow-accent/20 text-sm tracking-wide uppercase"
                                     >
-                                        Reserve Your Seat
+                                        {t.goToEvent}
                                     </motion.button>
                                     <div className="flex items-center gap-3 text-white/90">
                                         <CalendarDays size={20} className="text-[#bef264]" />
@@ -198,12 +210,13 @@ export default function EventsPage() {
                 <div className="space-y-8">
                     <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <h2 className="text-3xl font-heading font-bold text-slate-900">
-                            Upcoming <span className="text-accent italic">Gatherings</span>
+                            {t.eventsTitle.split(' ')[0]} <span className="text-accent italic">{t.eventsTitle.split(' ')[1]}</span>
                         </h2>
+
 
                         {/* Filter Chips */}
                         <div className="flex bg-slate-100 p-1.5 rounded-2xl self-start">
-                            {categories.map(({ value, label }) => (
+                            {categoriesList.map(({ value, label }) => (
                                 <motion.button
                                     key={label}
                                     layout
@@ -232,7 +245,7 @@ export default function EventsPage() {
                                         className="text-center py-20 bg-slate-50 rounded-[32px] border-2 border-dashed border-slate-200"
                                     >
                                         <CalendarDays size={48} className="mx-auto text-slate-300 mb-4" />
-                                        <p className="text-slate-500 font-medium">No gatherings scheduled in this category</p>
+                                        <p className="text-slate-500 font-medium">{t.noEvents}</p>
                                     </motion.div>
                                 ) : (
                                     events.map((event: any) => {
@@ -246,30 +259,52 @@ export default function EventsPage() {
                                                 initial="hidden"
                                                 animate="visible"
                                                 exit="exit"
-                                                className="group bg-white p-6 rounded-[28px] border border-slate-100 hover:border-red-200 hover:shadow-[0_20px_50px_rgba(155,28,28,0.06)] transition-all"
+                                                onClick={() => navigate(`/events/${event.id}`)}
+                                                className="group bg-white p-0 rounded-[28px] border border-slate-100 hover:border-red-200 hover:shadow-[0_20px_50px_rgba(155,28,28,0.06)] transition-all overflow-hidden cursor-pointer"
                                             >
-                                                <div className="flex flex-col md:flex-row gap-8 items-start md:items-center">
-                                                    {/* Date Box */}
-                                                    <div className="shrink-0 w-20 h-24 rounded-[22px] bg-red-50 flex flex-col items-center justify-center border border-red-50">
-                                                        <p className="text-[10px] font-black tracking-wide text-accent mb-0.5">{date.month}</p>
-                                                        <p className="text-3xl font-black text-slate-900 leading-none">{date.day}</p>
+                                                <div className="flex flex-col md:flex-row gap-0 items-stretch">
+                                                    {/* Image - now on the left for better visual balance */}
+                                                    <div className="shrink-0 w-full md:w-48 h-48 md:h-auto relative overflow-hidden bg-slate-50">
+                                                        {event.image_url ? (
+                                                            <img
+                                                                src={event.image_url}
+                                                                alt={event.title}
+                                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                                onError={(e) => {
+                                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                                    (e.target as HTMLImageElement).parentElement!.querySelector('.fallback-icon')!.classList.remove('hidden');
+                                                                }}
+                                                            />
+                                                        ) : null}
+                                                        <div className={`fallback-icon w-full h-full flex items-center justify-center text-slate-200 ${event.image_url ? 'hidden' : ''}`}>
+                                                            <CalendarDays size={48} />
+                                                        </div>
+                                                        <div className="absolute top-4 left-4 shrink-0 w-12 h-14 rounded-2xl bg-white/90 backdrop-blur shadow-sm flex flex-col items-center justify-center border border-white/20">
+                                                            <p className="text-[8px] font-black tracking-wide text-accent mb-0.5">{date.month}</p>
+                                                            <p className="text-xl font-black text-slate-900 leading-none">{date.day}</p>
+                                                        </div>
                                                     </div>
 
                                                     {/* Content */}
-                                                    <div className="flex-1 min-w-0 space-y-3">
+                                                    <div className="flex-1 p-6 space-y-3">
                                                         <div className="flex items-center gap-3">
                                                             <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wide ${styles.badge}`}>
-                                                                {event.category || 'General'}
+                                                                {event.category === 'academic' ? t.categories.academic :
+                                                                    event.category === 'social' ? t.categories.social :
+                                                                        event.category === 'deadline' ? t.categories.deadline :
+                                                                            t.featured}
                                                             </span>
+
                                                             <span className="w-1 h-1 rounded-full bg-slate-200" />
-                                                            <span className="text-[10px] font-bold text-slate-400 tracking-wide uppercase">Open Enrollment</span>
+                                                            <span className="text-[10px] font-bold text-slate-400 tracking-wide uppercase">{t.enrollmentOpen}</span>
                                                         </div>
-                                                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-accent transition-colors truncate">
+                                                        <h3 className="text-lg font-black text-slate-900 group-hover:text-accent transition-colors">
                                                             {event.title}
                                                         </h3>
                                                         <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed">
-                                                            {event.description || "Join the discussion on the ethical implications of emerging technologies and their impact on global society."}
+                                                            {event.description || t.featuredEventDesc}
                                                         </p>
+
                                                         <div className="flex items-center gap-6 pt-1">
                                                             <div className="flex items-center gap-2 text-slate-400">
                                                                 <Clock size={14} className="text-accent" />
@@ -277,19 +312,26 @@ export default function EventsPage() {
                                                             </div>
                                                             <div className="flex items-center gap-2 text-slate-400">
                                                                 <MapPin size={14} className="text-accent" />
-                                                                <span className="text-[11px] font-bold uppercase tracking-wide">{event.location || 'Campus Center'}</span>
+                                                                <span className="text-[11px] font-bold uppercase tracking-wide">{event.location || 'SMK'}</span>
                                                             </div>
+
                                                         </div>
                                                     </div>
 
                                                     {/* Action */}
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                        className="shrink-0 w-full md:w-auto px-6 py-3 bg-red-50 text-accent font-black text-[10px] tracking-wide uppercase rounded-xl hover:bg-accent hover:text-white transition-all"
-                                                    >
-                                                        Go To Event
-                                                    </motion.button>
+                                                    <div className="p-6 pt-0 md:pt-6 flex md:items-center justify-center">
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.05 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                navigate(`/events/${event.id}`);
+                                                            }}
+                                                            className="w-full md:w-auto px-6 py-3 bg-red-50 text-accent font-black text-[10px] tracking-wide uppercase rounded-xl hover:bg-accent hover:text-white transition-all whitespace-nowrap"
+                                                        >
+                                                            {t.goToEvent}
+                                                        </motion.button>
+                                                    </div>
                                                 </div>
                                             </motion.div>
                                         )
@@ -305,7 +347,7 @@ export default function EventsPage() {
                     {/* Academic Pulse */}
                     <motion.div variants={itemVariants} className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
                         <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-lg font-bold text-slate-900 font-heading">Academic <span className="text-accent underline decoration-red-200 decoration-2 underline-offset-4">Pulse</span></h3>
+                            <h3 className="text-lg font-bold text-slate-900 font-heading">{t.academicPulse.split(' ')[0]} <span className="text-accent underline decoration-red-200 decoration-2 underline-offset-4">{t.academicPulse.split(' ')[1]}</span></h3>
                             <div className="flex gap-1">
                                 <motion.button whileTap={{ scale: 0.9 }} onClick={() => changeMonth(-1)} className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-900">
                                     <ChevronLeft size={16} />
@@ -317,9 +359,10 @@ export default function EventsPage() {
                         </div>
 
                         <div className="grid grid-cols-7 gap-1 text-center mb-6">
-                            {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map((d) => (
+                            {t.daysShort.map((d) => (
                                 <div key={d} className="text-[10px] font-black text-slate-400 tracking-wide py-2">{d}</div>
                             ))}
+
                             {calendarDays().map((day, i) => {
                                 const isToday = day === today.getDate() && selectedMonth === today.getMonth();
                                 // Dummy indicator logic for mockup fidelity
@@ -344,13 +387,13 @@ export default function EventsPage() {
 
                         <div className="space-y-3 pt-6 border-t border-slate-50">
                             <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-wide text-slate-400">
-                                <span className="w-2 h-2 rounded-full bg-accent" /> Major Campus Event
+                                <span className="w-2 h-2 rounded-full bg-accent" /> {t.campusEvent}
                             </div>
                             <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-wide text-slate-400">
-                                <span className="w-2 h-2 rounded-full bg-green-500" /> Club/Social Meetup
+                                <span className="w-2 h-2 rounded-full bg-green-500" /> {t.clubMeetup}
                             </div>
                             <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-wide text-slate-400">
-                                <span className="w-2 h-2 rounded-full bg-red-500" /> Submission Deadline
+                                <span className="w-2 h-2 rounded-full bg-red-500" /> {t.submissionDeadline}
                             </div>
                         </div>
                     </motion.div>
@@ -362,21 +405,21 @@ export default function EventsPage() {
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-accent/20 transition-all duration-700" />
                         <h3 className="text-xl font-black leading-snug relative z-10 font-heading">
-                            Host your own <br />event?
+                            {t.hostEventTitle.split(' ').slice(0, 2).join(' ')} <br />{t.hostEventTitle.split(' ').slice(2).join(' ')}
                         </h3>
                         <p className="text-sm text-slate-400 leading-relaxed font-medium relative z-10">
-                            Submit your proposal for review and get featured in the Greenhouse.
+                            {t.hostEventDesc}
                         </p>
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className="w-full py-4 bg-[#bef264] text-slate-900 font-black text-xs tracking-wide uppercase rounded-2xl transition-all shadow-lg shadow-[#bef264]/10 relative z-10"
                         >
-                            Submit Event
+                            {t.submitEvent}
                         </motion.button>
                     </motion.div>
                 </aside>
             </div>
-        </motion.div>
+        </motion.div >
     )
 }

@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
+import { useTranslation, Language } from '../lib/translations'
+import LanguageSelector from './LanguageSelector'
 import {
     LayoutDashboard,
     MessageSquare,
@@ -23,13 +25,14 @@ interface SidebarProps {
 }
 
 const navItems = [
-    { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/chat', icon: MessageSquare, label: 'AI Chat' },
-    { to: '/schedule', icon: Calendar, label: 'Schedule' },
-    { to: '/rooms', icon: DoorOpen, label: 'Rooms' },
-    { to: '/events', icon: CalendarDays, label: 'Events' },
-    { to: '/settings', icon: Settings, label: 'Settings' },
+    { to: '/dashboard', icon: LayoutDashboard, labelKey: 'dashboard' },
+    { to: '/chat', icon: MessageSquare, labelKey: 'chat' },
+    { to: '/schedule', icon: Calendar, labelKey: 'schedule' },
+    { to: '/rooms', icon: DoorOpen, labelKey: 'rooms' },
+    { to: '/events', icon: CalendarDays, labelKey: 'events' },
+    { to: '/settings', icon: Settings, labelKey: 'settings' },
 ]
+
 
 const sidebarVariants: Variants = {
     open: {
@@ -76,6 +79,8 @@ const navItemVariants: Variants = {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const { user, logout } = useAuthStore()
+    const { t } = useTranslation(user?.language_preference as Language)
+
 
     const handleLogout = () => {
         logout()
@@ -129,7 +134,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     animate="visible"
                     className="flex-1 px-4 py-10 flex flex-col gap-1 overflow-y-auto"
                 >
-                    {navItems.map(({ to, icon: Icon, label }) => (
+                    {navItems.map(({ to, icon: Icon, labelKey }) => (
                         <motion.div key={to} variants={navItemVariants}>
                             <NavLink
                                 to={to}
@@ -140,11 +145,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             >
                                 <div className="sidebar-curve-top" />
                                 <Icon size={20} className="shrink-0 transition-transform duration-300 group-hover:scale-110" />
-                                <span className="font-bold text-sm tracking-tight">{label}</span>
+                                <span className="font-bold text-sm tracking-tight">{(t as any)[labelKey]}</span>
                                 <div className="sidebar-curve-bottom" />
                             </NavLink>
                         </motion.div>
                     ))}
+
 
                     {user?.role === 'admin' && (
                         <motion.div variants={navItemVariants}>
@@ -157,11 +163,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                             >
                                 <div className="sidebar-curve-top" />
                                 <ShieldCheck size={20} className="shrink-0 transition-transform duration-300 group-hover:scale-110" />
-                                <span className="font-bold text-sm tracking-tight">Admin</span>
+                                <span className="font-bold text-sm tracking-tight">{t.admin}</span>
                                 <div className="sidebar-curve-bottom" />
                             </NavLink>
                         </motion.div>
                     )}
+
                 </motion.nav>
 
                 {/* Logout */}
@@ -178,8 +185,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-white/80 hover:text-white transition-all duration-200"
                     >
                         <LogOut size={20} className="shrink-0" />
-                        <span className="font-medium text-sm">Logout</span>
+                        <span className="font-medium text-sm">{t.logout}</span>
                     </motion.button>
+
                     <div className="mt-6 flex flex-col items-center">
                         <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">
                             {user?.role || 'User'}

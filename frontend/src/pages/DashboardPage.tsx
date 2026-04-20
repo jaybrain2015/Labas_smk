@@ -1,13 +1,18 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
-import { useMySchedule, useRoomAvailability, useUpcomingEvents, useSendMessage } from '../hooks/useApi'
+import { useMySchedule, useRoomAvailability, useUpcomingEvents, useEvents } from '../hooks/useApi'
+import { chatApi } from '../lib/api'
+
 import {
     Calendar, Sparkles, Send, Clock, MapPin, Users,
     ArrowRight, Bot, Loader2, X, Zap, DoorOpen,
     Newspaper,
 } from 'lucide-react'
 import { motion, AnimatePresence, Variants } from 'framer-motion'
+import { useTranslation, Language } from '../lib/translations'
+
+
 
 import campusBg from '../assets/campus-bg.webp'
 import editorialVrLab from '../assets/editorial-vr-lab.png'
@@ -17,36 +22,20 @@ import eventSummit from '../assets/event-summit.png'
 
 /* ── helpers ────────────────────────────────────────── */
 
-function getGreeting() {
+function getGreetingKey() {
     const h = new Date().getHours()
-    if (h < 12) return 'Good morning'
-    if (h < 18) return 'Good afternoon'
-    return 'Good evening'
+    if (h < 12) return 'goodMorning'
+    if (h < 18) return 'goodAfternoon'
+    return 'goodEvening'
 }
 
+
 const quickChips = [
-    '"Where is my next class?"',
-    '"Is the library open?"',
-    '"Academic deadlines"',
+    'queryNextClass',
+    'queryLibrary',
+    'queryDeadlines',
 ]
 
-const editorialArticles = [
-    {
-        img: editorialVrLab,
-        category: 'FACULTY OF CREATIVE TECH · AN ADO',
-        title: 'New VR Lab Opening Ceremony next Tuesday',
-    },
-    {
-        img: editorialVolunteering,
-        category: 'STUDENT COUNCIL · WEDNESDAY',
-        title: 'Volunteering Week: How you can make an Impact',
-    },
-    {
-        img: editorialInternship,
-        category: 'CAREER CENTRE · EVENTS HUB',
-        title: 'Internship Fair: Top 50 Lithuanian Startups',
-    },
-]
 
 /* ── variants ───────────────────────────────────────── */
 
@@ -79,19 +68,26 @@ const itemVariants: Variants = {
 export default function DashboardPage() {
     const navigate = useNavigate()
     const { user } = useAuthStore()
+    const { t } = useTranslation(user?.language_preference as Language)
+
+    const lang = user?.language_preference || 'lt'
     const { data: scheduleData, isLoading: schedLoading } = useMySchedule()
     const { data: roomsData, isLoading: roomsLoading } = useRoomAvailability()
-    const { data: eventsData } = useUpcomingEvents()
-    const sendMutation = useSendMessage()
+    const { data: eventsData } = useUpcomingEvents(lang)
+    const { data: editorialData } = useEvents(undefined, true, lang) // Fetch editorial posts
 
     const [chatInput, setChatInput] = useState('')
-    const [chatResponse, setChatResponse] = useState<string | null>(null)
+    const [chatResponse, setChatResponse] = useState<string>('')
     const [chatLoading, setChatLoading] = useState(false)
     const [chatOpen, setChatOpen] = useState(false)
 
     const schedule = scheduleData?.data || []
-    const freeRooms = (roomsData?.data || []).filter((r: any) => r.status === 'free').slice(0, 2)
+    const allFreeRooms = (roomsData?.data || []).filter((r: any) => r.status === 'free')
+    const libraryRoom = allFreeRooms.find((r: any) => r.type === 'library' || r.name.toLowerCase().includes('library'))
+    const otherFree = allFreeRooms.filter((r: any) => r.id !== libraryRoom?.id).slice(0, libraryRoom ? 2 : 3)
+    const freeRooms = libraryRoom ? [libraryRoom, ...otherFree] : otherFree.slice(0, 3)
     const nextEvent = (eventsData?.data || [])[0]
+    const editorialArticles = (editorialData?.data || []).slice(0, 4)
     const firstName = user?.name?.split(' ')[0] || 'Student'
 
     const handleChat = async (text?: string) => {
@@ -99,16 +95,23 @@ export default function DashboardPage() {
         if (!message) return
         setChatInput('')
         setChatLoading(true)
-        setChatResponse(null)
+        setChatResponse('')
+        setChatOpen(true)
+
+        let fullContent = ''
         try {
-            const result = await sendMutation.mutateAsync(message)
-            setChatResponse(result.data?.response || 'Sorry, I couldn\'t process that.')
+            await chatApi.stream(message, (chunk: string) => {
+                fullContent += chunk
+                setChatResponse(fullContent)
+            })
         } catch {
-            setChatResponse('Something went wrong. Please try again.')
+
+            setChatResponse(t.errorMessage)
         } finally {
             setChatLoading(false)
         }
     }
+
 
     /* next immediate class */
     const now = new Date()
@@ -128,8 +131,8 @@ export default function DashboardPage() {
             <motion.div variants={itemVariants} className="relative overflow-hidden rounded-3xl h-[280px] md:h-[320px]">
                 {/* Background image */}
                 <img
-                    src={campusBg}
-                    alt="SMK Campus"
+                    src="/assets/images/hero_students.jpg"
+                    alt="SMK Students"
                     className="absolute inset-0 w-full h-full object-cover"
                 />
                 {/* Gradient overlay */}
@@ -143,7 +146,7 @@ export default function DashboardPage() {
                         transition={{ delay: 0.3 }}
                         className="text-4xl md:text-5xl font-heading font-extrabold text-white leading-tight"
                     >
-                        Labas, <span className="text-[#f4a261]">{firstName}.</span>
+                        {t.hello}, <span className="text-[#f4a261]">{firstName}.</span>
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, x: -20 }}
@@ -151,9 +154,9 @@ export default function DashboardPage() {
                         transition={{ delay: 0.4 }}
                         className="text-white/70 mt-3 text-sm md:text-base max-w-md"
                     >
-                        {getGreeting()}! Your academic journey continues today
-                        with {schedule.length} scheduled session{schedule.length !== 1 ? 's' : ''}.
+                        {(t as any)[getGreetingKey()]}! {t.journeyPrompt.replace('{count}', String(schedule.length))}
                     </motion.p>
+
                 </div>
 
                 {/* Next Immediate card */}
@@ -164,7 +167,8 @@ export default function DashboardPage() {
                         transition={{ delay: 0.5, type: 'spring' }}
                         className="absolute top-6 right-6 md:top-8 md:right-10 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-4 w-[220px] hidden md:block"
                     >
-                        <p className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-2">Next Immediate</p>
+                        <p className="text-[10px] text-white/50 uppercase tracking-widest font-bold mb-2">{t.nextImmediate}</p>
+
                         <div className="flex items-start gap-3">
                             <div className="w-9 h-9 rounded-xl bg-[#9b1c1c] flex items-center justify-center shrink-0">
                                 <Zap size={16} className="text-white" />
@@ -188,14 +192,15 @@ export default function DashboardPage() {
                 {/* ── LEFT: Today's Pulse (3 cols) ─────────── */}
                 <motion.div variants={itemVariants} className="lg:col-span-2">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="section-title">Today's Pulse</h2>
+                        <h2 className="section-title">{t.todaysPulse}</h2>
                         <button
                             onClick={() => navigate('/schedule')}
                             className="text-xs text-[#9b1c1c] font-bold flex items-center gap-1 hover:gap-2 transition-all"
                         >
-                            Full Calendar <ArrowRight size={14} />
+                            {t.fullCalendar} <ArrowRight size={14} />
                         </button>
                     </div>
+
 
                     {schedLoading ? (
                         <div className="space-y-3">
@@ -210,9 +215,10 @@ export default function DashboardPage() {
                     ) : schedule.length === 0 ? (
                         <div className="text-center py-14 bg-white rounded-2xl shadow-card">
                             <Calendar size={36} className="mx-auto text-text-muted mb-3" />
-                            <p className="text-sm text-text-secondary">No classes today</p>
-                            <p className="text-xs text-text-muted mt-1">Enjoy your free day! 🎉</p>
+                            <p className="text-sm text-text-secondary">{t.noClassesToday}</p>
+                            <p className="text-xs text-text-muted mt-1">{t.enjoyFreeDay}</p>
                         </div>
+
                     ) : (
                         <motion.div
                             variants={containerVariants}
@@ -242,8 +248,9 @@ export default function DashboardPage() {
                                                         animate={{ opacity: 1, scale: 1 }}
                                                         className="text-[9px] bg-white/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider"
                                                     >
-                                                        ● Upcoming in 45m
+                                                        ● {t.upcomingIn.replace('{time}', '45m')}
                                                     </motion.span>
+
                                                 )}
                                             </AnimatePresence>
                                             {!isNext && (
@@ -265,9 +272,11 @@ export default function DashboardPage() {
                                         </div>
                                         {item.type === 'remote' && (
                                             <p className={`text-[10px] mt-1 ${isNext ? 'text-white/50' : 'text-text-muted'}`}>
-                                                📡 Remote Session
+                                                📡 {t.remoteSession}
                                             </p>
                                         )}
+
+
                                     </motion.div>
                                 )
                             })}
@@ -292,27 +301,29 @@ export default function DashboardPage() {
                             </motion.div>
                             <div>
                                 <h3 className="text-lg font-heading font-bold">
-                                    How can I assist your studies today?
+                                    {t.howAssistToday}
                                 </h3>
                                 <p className="text-sm text-white/50 mt-1">
-                                    AI Assistant is ready to help you navigate campus and courses.
+                                    {t.aiAssistantReady}
                                 </p>
                             </div>
+
                         </div>
                         <div className="flex flex-wrap gap-2 mt-5">
-                            {quickChips.map((chip) => (
+                            {quickChips.map((key) => (
                                 <motion.button
-                                    key={chip}
+                                    key={key}
                                     whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
                                     whileTap={{ scale: 0.95 }}
-                                    onClick={() => handleChat(chip.replace(/"/g, ''))}
+                                    onClick={() => handleChat((t as any)[key])}
                                     className="px-3 py-1.5 rounded-full border border-white/20 text-xs text-white/70
                                         transition-all"
                                 >
-                                    {chip}
+                                    {(t as any)[key]}
                                 </motion.button>
                             ))}
                         </div>
+
                     </motion.div>
 
                     {/* Study Spaces + Featured Event */}
@@ -321,11 +332,12 @@ export default function DashboardPage() {
                         {/* Study Spaces */}
                         <motion.div variants={itemVariants} className="bg-white rounded-2xl p-5 shadow-card border border-border">
                             <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-heading font-bold text-text-primary">Study Spaces</h3>
+                                <h3 className="font-heading font-bold text-text-primary">{t.studySpaces}</h3>
                                 <span className="text-[9px] bg-[#9b1c1c]/10 text-[#9b1c1c] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                                    Live Status
+                                    {t.liveStatus}
                                 </span>
                             </div>
+
 
                             {roomsLoading ? (
                                 <div className="space-y-3">
@@ -336,8 +348,9 @@ export default function DashboardPage() {
                             ) : freeRooms.length === 0 ? (
                                 <div className="text-center py-6">
                                     <DoorOpen size={24} className="mx-auto text-text-muted mb-2" />
-                                    <p className="text-xs text-text-muted">No free rooms right now</p>
+                                    <p className="text-xs text-text-muted">{t.noFreeRooms}</p>
                                 </div>
+
                             ) : (
                                 <div className="space-y-3">
                                     {freeRooms.map((room: any) => (
@@ -347,20 +360,22 @@ export default function DashboardPage() {
                                                     <DoorOpen size={16} className="text-[#9b1c1c]" />
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-text-primary">{room.number || room.name}</p>
-                                                    <p className="text-[10px] text-text-muted">
-                                                        {room.capacity ? `${room.capacity} capacity` : 'Available'}
-                                                    </p>
+                                                    <p className="text-sm font-bold text-text-primary">{room.number}</p>
+                                                    <div className="flex flex-col">
+                                                        <p className="text-[10px] text-text-muted font-medium line-clamp-1">{room.name}</p>
+                                                        <p className="text-[10px] text-[#9b1c1c] font-bold">
+                                                            {room.duration_minutes ?
+                                                                t.freeDuration.replace('{duration}',
+                                                                    room.duration_minutes >= 60
+                                                                        ? `${Math.floor(room.duration_minutes / 60)}h ${Math.floor(room.duration_minutes % 60)}m`
+                                                                        : `${Math.floor(room.duration_minutes)}m`
+                                                                )
+                                                                : (room.free_until ? t.freeUntil.replace('{time}', room.free_until) : t.available)
+                                                            }
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <motion.button
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() => navigate('/rooms')}
-                                                className="px-3 py-1.5 bg-[#9b1c1c] text-white text-[10px] font-bold rounded-full hover:bg-[#7f1d1d] transition-colors"
-                                            >
-                                                Quick Reserve
-                                            </motion.button>
                                         </div>
                                     ))}
                                 </div>
@@ -375,10 +390,11 @@ export default function DashboardPage() {
                             onClick={() => navigate('/events')}
                         >
                             <img
-                                src={eventSummit}
-                                alt="SMK Innovation Summit"
+                                src={nextEvent?.image_url || "/assets/images/graduation.jpg"}
+                                alt={nextEvent?.title || t.featuredEvent}
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                             />
+
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                             <div className="absolute bottom-0 left-0 right-0 p-5">
                                 <motion.span
@@ -387,14 +403,17 @@ export default function DashboardPage() {
                                     transition={{ delay: 0.6 }}
                                     className="text-[9px] bg-[#9b1c1c] text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider"
                                 >
-                                    This Friday
+                                    {nextEvent ? t.nextEventLabel : t.featured}
                                 </motion.span>
+
+
                                 <h3 className="text-white font-heading font-bold mt-2 text-sm leading-snug">
-                                    {nextEvent?.title || 'SMK Innovation Summit 2026'}
+                                    {nextEvent?.title || t.featuredEventTitle}
                                 </h3>
-                                <p className="text-white/50 text-[10px] mt-1">
-                                    Networking, Workshops & Keynotes
+                                <p className="text-white/50 text-[10px] mt-1 line-clamp-1">
+                                    {nextEvent?.description || t.featuredEventDesc}
                                 </p>
+
                             </div>
                         </motion.div>
                     </div>
@@ -405,38 +424,51 @@ export default function DashboardPage() {
                 3. CAMPUS EDITORIAL
             ═══════════════════════════════════════════════ */}
             <motion.div variants={itemVariants}>
-                <p className="text-[10px] text-[#9b1c1c] font-bold uppercase tracking-[0.2em] mb-1">Stay Informed</p>
-                <h2 className="text-xl md:text-2xl font-heading font-bold text-text-primary mb-6">Campus Editorial</h2>
+                <p className="text-[10px] text-[#9b1c1c] font-bold uppercase tracking-[0.2em] mb-1">{t.stayInformed}</p>
+                <h2 className="text-xl md:text-2xl font-heading font-bold text-text-primary mb-6">{t.campusEditorial}</h2>
 
                 <motion.div
                     variants={containerVariants}
                     className="grid grid-cols-1 md:grid-cols-3 gap-6"
                 >
-                    {editorialArticles.map((article, idx) => (
-                        <motion.div
-                            key={idx}
-                            variants={itemVariants}
-                            whileHover={{ y: -5 }}
-                            className="group cursor-pointer"
-                            onClick={() => navigate('/events')}
-                        >
-                            <div className="overflow-hidden rounded-2xl h-[200px] mb-3 shadow-card border border-border">
-                                <img
-                                    src={article.img}
-                                    alt={article.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                            </div>
-                            <p className="text-[9px] text-text-muted uppercase tracking-wider font-medium">
-                                {article.category}
-                            </p>
-                            <h3 className="text-sm font-heading font-bold text-text-primary mt-1 leading-snug group-hover:text-[#9b1c1c] transition-colors line-clamp-2">
-                                {article.title}
-                            </h3>
-                        </motion.div>
-                    ))}
+                    {editorialArticles.length === 0 ? (
+                        <div className="col-span-full py-12 text-center bg-white rounded-2xl border-2 border-dashed border-border">
+                            <p className="text-sm text-text-muted">{t.noEditorialPosts}</p>
+                        </div>
+                    ) : (
+                        editorialArticles.slice(0, 3).map((article: any, idx: number) => (
+                            <motion.div
+                                key={article.id || idx}
+                                variants={itemVariants}
+                                whileHover={{ y: -5 }}
+                                className="group cursor-pointer"
+                                onClick={() => navigate('/events')}
+                            >
+                                <div className="overflow-hidden rounded-2xl h-[200px] mb-3 shadow-card border border-border">
+                                    <img
+                                        src={article.image_url || '/assets/images/hero_students.jpg'}
+                                        alt={article.title}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        onError={(e) => {
+                                            if (article.image_url) {
+                                                (e.target as HTMLImageElement).src = editorialVrLab;
+                                            }
+                                        }}
+                                    />
+                                </div>
+                                <p className="text-[9px] text-text-muted uppercase tracking-wider font-medium">
+                                    {article.editorial_category || t.campusLabel}
+                                </p>
+
+                                <h3 className="text-sm font-heading font-bold text-text-primary mt-1 leading-snug group-hover:text-[#9b1c1c] transition-colors line-clamp-2">
+                                    {article.title}
+                                </h3>
+                            </motion.div>
+                        ))
+                    )}
                 </motion.div>
             </motion.div>
+
 
             {/* ═══════════════════════════════════════════════
                 4. FLOATING AI CHAT WIDGET
@@ -450,21 +482,23 @@ export default function DashboardPage() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-                            className="absolute bottom-18 right-0 w-[360px] bg-white rounded-2xl shadow-2xl border border-border overflow-hidden mb-4"
+                            className="absolute bottom-full right-0 w-[min(380px,90vw)] max-h-[calc(100vh-120px)] bg-white rounded-2xl shadow-2xl border border-border flex flex-col mb-4 overflow-hidden"
                         >
                             {/* Header */}
                             <div className="flex items-center justify-between p-4 border-b border-border bg-[#9b1c1c]/5">
                                 <div className="flex items-center gap-2">
                                     <Sparkles size={16} className="text-[#9b1c1c]" />
-                                    <h3 className="text-sm font-bold text-text-primary">AI Assistant</h3>
+                                    <h3 className="text-sm font-bold text-text-primary">{t.aiAssistant}</h3>
                                 </div>
+
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => navigate('/chat')}
                                         className="text-[10px] text-[#9b1c1c] font-medium hover:underline"
                                     >
-                                        Full chat →
+                                        {t.fullChat} →
                                     </button>
+
                                     <button
                                         onClick={() => setChatOpen(false)}
                                         className="p-1 rounded-lg hover:bg-bg-hover transition-colors text-text-muted"
@@ -477,15 +511,15 @@ export default function DashboardPage() {
                             {/* Quick chips */}
                             <div className="flex flex-wrap gap-1.5 p-3 border-b border-border/50">
                                 {[
-                                    { label: 'My schedule today', icon: Calendar },
-                                    { label: 'Free rooms now', icon: MapPin },
-                                    { label: 'Library hours', icon: Clock },
-                                ].map(({ label, icon: Icon }) => (
+                                    { label: t.querySchedule, icon: Calendar, query: t.querySchedule },
+                                    { label: t.queryRooms, icon: MapPin, query: t.queryRooms },
+                                    { label: t.queryLibraryHours, icon: Clock, query: t.queryLibraryHours },
+                                ].map(({ label, icon: Icon, query }) => (
                                     <motion.button
                                         key={label}
                                         whileHover={{ scale: 1.02, backgroundColor: 'rgba(155, 28, 28, 0.05)' }}
                                         whileTap={{ scale: 0.98 }}
-                                        onClick={() => handleChat(label)}
+                                        onClick={() => handleChat(query)}
                                         disabled={chatLoading}
                                         className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-bg-hover border border-border
                                             text-[11px] text-text-secondary hover:text-[#9b1c1c] hover:border-[#9b1c1c]/30 transition-all disabled:opacity-50"
@@ -497,7 +531,7 @@ export default function DashboardPage() {
                             </div>
 
                             {/* Response area */}
-                            <div className="p-4 min-h-[100px] max-h-[250px] overflow-y-auto">
+                            <div className="p-4 flex-1 overflow-y-auto min-h-[100px]">
                                 <AnimatePresence mode="wait">
                                     {chatLoading ? (
                                         <motion.div
@@ -552,8 +586,9 @@ export default function DashboardPage() {
                                             className="flex flex-col items-center justify-center text-center py-4"
                                         >
                                             <Bot size={24} className="text-text-muted mb-2" />
-                                            <p className="text-[11px] text-text-muted">Ask a question or tap a suggestion</p>
+                                            <p className="text-[11px] text-text-muted">{t.askQuestionHint}</p>
                                         </motion.div>
+
                                     )}
                                 </AnimatePresence>
                             </div>
@@ -570,10 +605,11 @@ export default function DashboardPage() {
                                             handleChat()
                                         }
                                     }}
-                                    placeholder="Ask about SMK..."
+                                    placeholder={t.askSmk}
                                     className="flex-1 bg-bg-hover border border-border rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-[#9b1c1c]/20 focus:border-[#9b1c1c]/30 outline-none transition-all"
                                     disabled={chatLoading}
                                 />
+
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
@@ -627,6 +663,6 @@ export default function DashboardPage() {
                     </AnimatePresence>
                 </motion.button>
             </div>
-        </motion.div>
+        </motion.div >
     )
 }
