@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: jaybrain/labas-frontend:dbbe97607ec1c0a72e8322fc10d30dc58006845f
+          image: jaybrain/labas-frontend:a47b9e62c157d5ac33470571480be4b2b33d4a08
           env:
             - name: VITE_API_URL
               value: "https://healthcare-appointments.com/api"
