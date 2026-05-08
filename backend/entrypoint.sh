@@ -20,6 +20,7 @@ done
 
 echo "Database is ready. Running migrations..."
 php artisan migrate --force
+php artisan storage:link --force
 
 USER_COUNT=$(php artisan tinker --execute="echo App\Models\User::count();" 2>/dev/null | grep -E '^[0-9]+$' | head -1)
 if [ "${USER_COUNT:-0}" = "0" ]; then
