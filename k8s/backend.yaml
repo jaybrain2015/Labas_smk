@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: jaybrain/labas-backend:a47b9e62c157d5ac33470571480be4b2b33d4a08
+          image: jaybrain/labas-backend:dacc56a31e0dad391b586d39e495b46a99831597
           env:
             - name: APP_KEY
               valueFrom:
