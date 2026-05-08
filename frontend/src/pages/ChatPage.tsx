@@ -101,6 +101,7 @@ export default function ChatPage() {
         let fullContent = ''
 
         try {
+            const history = messages.map(m => ({ role: m.role, content: m.content }))
             await chatApi.stream(message, (chunk) => {
                 fullContent += chunk
                 setMessages((prev) => {
@@ -111,7 +112,7 @@ export default function ChatPage() {
                     }
                     return newMessages
                 })
-            })
+            }, history)
         } catch (error) {
             console.error('Streaming error:', error)
             setMessages((prev) => {

@@ -90,6 +90,7 @@ async def chat_stream(request: ChatRequest):
             message=request.message,
             user_context=request.user_context,
             language=request.language,
+            history=[m.dict() for m in request.history],
         ):
             yield chunk
 

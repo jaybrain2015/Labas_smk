@@ -10,7 +10,7 @@ import { useAuthStore } from '../store/authStore'
 
 
 
-import auditoriumImg from '../assets/room-auditorium.png'
+import auditoriumImg from '../assets/smk_hall.png'
 
 /* ── variants ───────────────────────────────────────── */
 
@@ -112,6 +112,11 @@ export default function RoomsPage() {
         if (firstDigit === '2') return t.secondFloor;
         if (firstDigit === '3') return t.thirdFloor;
         return `${firstDigit}${t.levelSuffix} ${t.levelLabel}`;
+    }
+
+    const getRoomDisplayName = (room: any) => {
+        if (!room?.name) return null
+        return (t.roomNames as Record<string, string>)?.[room.name] || room.name
     }
 
     return (
@@ -225,7 +230,9 @@ export default function RoomsPage() {
                                         {/* Room Info */}
                                         <div className="space-y-1">
                                             <h3 className="text-xl font-bold text-slate-900 leading-tight">
-                                                {room.name ? `${room.name} (${room.number})` : `${t.roomLabel} ${room.number}`}
+                                                {getRoomDisplayName(room)
+                                                    ? `${getRoomDisplayName(room)} (${room.number})`
+                                                    : `${t.roomLabel} ${room.number}`}
                                             </h3>
                                             <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
                                                 {room.building || `Vilnius Campus`} <span className="w-1 h-1 bg-slate-100 rounded-full" /> {getFloorLabel(room.number)}
@@ -334,21 +341,6 @@ export default function RoomsPage() {
                             <X size={14} />
 
                         </motion.button>
-                        <span className="absolute top-5 right-6 text-[9px] font-bold uppercase tracking-wide text-white/50 bg-black/5 px-2 py-1 rounded-md">{t.roomAnalytics}</span>
-                        <div className="absolute bottom-6 left-8 text-white">
-                            <AnimatePresence mode="wait">
-                                <motion.h2
-                                    key={activeRoom?.number}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="text-xl font-bold uppercase tracking-tight"
-                                >
-                                    {activeRoom?.name || activeRoom?.number || t.unknown}
-                                </motion.h2>
-
-                            </AnimatePresence>
-                        </div>
                     </div>
 
                     <div className="p-8 space-y-10">
@@ -364,7 +356,9 @@ export default function RoomsPage() {
                             >
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-xl font-bold text-slate-900">
-                                        {activeRoom?.name ? `${activeRoom.name} (${activeRoom.number})` : `${t.roomLabel} ${activeRoom?.number || '302'}`}
+                                        {getRoomDisplayName(activeRoom)
+                                            ? `${getRoomDisplayName(activeRoom)} (${activeRoom?.number})`
+                                            : `${t.roomLabel} ${activeRoom?.number || '302'}`}
                                     </h3>
 
                                     <div className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wide ${activeRoom?.status === 'free' ? 'bg-lime-400 text-slate-900' : 'bg-red-50 text-red-600'}`}>

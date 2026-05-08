@@ -29,6 +29,8 @@ RESPONSE RULES (follow these strictly):
    - Never ask for info (name, campus, ID) that is already in the context.
 
 CONVERSATION RULES:
+- ALWAYS read the full conversation history before responding. Short or vague messages (like "nigeria", "internship", "yes") are continuations of the prior topic — never treat them as isolated questions.
+- If the student sends a one-word or short message, assume it relates to what was just discussed and continue that thread.
 - Remember what the student said earlier and build on your answers.
 - Go deeper only when the student asks for more.
 - If a student seems confused, slow down and simplify. Never repeat yourself.
@@ -129,6 +131,7 @@ class ClaudeService:
         message: str,
         user_context: Optional[dict] = None,
         language: Optional[str] = None,
+        history: Optional[list] = None,
     ):
         """Stream a response from Claude."""
         detected_language = language or detect_language(message)
@@ -147,11 +150,13 @@ class ClaudeService:
             return
 
         try:
+            prior = [{"role": m["role"], "content": m["content"]} for m in (history or [])]
+            messages = prior + [{"role": "user", "content": message}]
             async with self.client.messages.stream(
                 model=self.model,
                 max_tokens=1024,
                 system=system_prompt,
-                messages=[{"role": "user", "content": message}],
+                messages=messages,
             ) as stream:
                 async for text in stream.text_stream:
                     yield text

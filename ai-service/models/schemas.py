@@ -3,8 +3,14 @@ from typing import Optional
 from datetime import datetime
 
 
+class ChatMessage(BaseModel):
+    role: str = Field(..., description="Message role: 'user' or 'assistant'")
+    content: str = Field(..., description="Message content")
+
+
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=2000, description="User message")
+    history: list[ChatMessage] = Field(default_factory=list, description="Prior conversation messages")
     user_context: Optional[dict] = Field(default=None, description="User context data")
     language: Optional[str] = Field(default=None, description="Preferred language code (en, lt, ru)")
 

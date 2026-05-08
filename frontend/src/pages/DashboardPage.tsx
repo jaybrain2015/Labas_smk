@@ -174,7 +174,10 @@ export default function DashboardPage() {
                                 <Zap size={16} className="text-white" />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-white leading-tight">{nextClass.subject}</p>
+                                <p className="text-sm font-bold text-white leading-tight">
+                                    {/* @ts-ignore */}
+                                    {t.subjectNames?.[nextClass.subject] || nextClass.subject}
+                                </p>
                                 <p className="text-xs text-white/60 mt-0.5">
                                     {nextClass.start_time?.slice(0, 5)} · {nextClass.room?.number || 'TBA'}
                                 </p>
@@ -260,7 +263,8 @@ export default function DashboardPage() {
                                             )}
                                         </div>
                                         <p className={`text-sm font-bold font-heading ${isNext ? 'text-white' : 'text-text-primary'}`}>
-                                            {item.subject}
+                                            {/* @ts-ignore */}
+                                            {t.subjectNames?.[item.subject] || item.subject}
                                         </p>
                                         <div className={`flex items-center gap-3 mt-1.5 text-xs ${isNext ? 'text-white/60' : 'text-text-muted'}`}>
                                             <span className="flex items-center gap-1">

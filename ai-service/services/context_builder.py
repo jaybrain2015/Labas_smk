@@ -37,6 +37,44 @@ SMK_KNOWLEDGE_BASE = """
 - **Student ID**: LSP (www.lsp.lt) or ISIC (www.isic.lt).
 - **Certificates**: Order via Moodle ("Pažymų užsakymas").
 - **Special Needs**: Contact the Student Office for support.
+
+## Frequently Asked Questions (Student Handbook)
+
+**Q: Can I leave during the school year?**
+A: There is no need to formalize the departure during studies. However, each lecturer has established attendance rules for their classes, which the student must adhere to.
+
+**Q: What if I miss the exam?**
+A: If the student misses the exam, the retake is paid.
+
+**Q: I have academic debt, what should I do?**
+A: If you have academic debts, first contact the responsible lecturer to agree on the form and date of the assessment. Once the date is agreed upon, the payment for the retake can be made. All payment information is provided by the Study Department.
+
+**Q: When do holidays, exam sessions, and retake sessions start?**
+A: The holiday schedules are created each academic year. All information is posted in the Moodle environment.
+
+**Q: When is the exam planned?**
+A: All information regarding the exam schedule can be found in the Classter system.
+
+**Q: Is there a chance to have an exam earlier than scheduled?**
+A: Yes. Students are given the opportunity to take exams before the exam session. They need to fill out a request and agree on the dates with the responsible lecturers.
+
+**Q: What is the deadline for the study semester payment?**
+A: The payment should be done before the beginning of the semester, as indicated in the study agreement.
+
+**Q: Where can I perform my internship?**
+A: Each internship has its own goals and expected outcomes. Before choosing a location, review the internship documents posted in the Moodle environment.
+
+**Q: Can I perform an internship online?**
+A: Students studying in full-time studies are required to complete their internship in person.
+
+**Q: Can I perform an internship in my native country?**
+A: There are no restrictions on the internship location, as long as the position aligns with the internship goals and expected outcomes.
+
+**Q: Where can I look for an internship?**
+A: Students can search for internship placements using job listing portals.
+
+**Q: I failed the exam, what should I do?**
+A: One retake per exam session is free, but only if the student attended the exam and did not pass. This rule does not apply if the student missed the exam.
 """
 
 

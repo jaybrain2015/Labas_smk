@@ -11,7 +11,7 @@ import { motion, AnimatePresence, Variants } from 'framer-motion'
 import { useTranslation, Language } from '../lib/translations'
 import { useAuthStore } from '../store/authStore'
 
-import heroBg from '../assets/events-hero-bg.png'
+import heroBg from '../assets/smk_bak.jpg'
 
 /* ── variants ───────────────────────────────────────── */
 

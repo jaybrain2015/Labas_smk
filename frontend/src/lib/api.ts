@@ -103,7 +103,7 @@ export const eventsApi = {
 export const chatApi = {
     send: (message: string) =>
         api.post('/chat', { message }),
-    stream: async (message: string, onChunk: (text: string) => void) => {
+    stream: async (message: string, onChunk: (text: string) => void, history?: { role: string; content: string }[]) => {
         const token = useAuthStore.getState().token
         const response = await fetch(`${import.meta.env.VITE_API_URL}/chat/stream`, {
             method: 'POST',
@@ -112,7 +112,7 @@ export const chatApi = {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'text/plain',
             },
-            body: JSON.stringify({ message }),
+            body: JSON.stringify({ message, history: history || [] }),
         })
 
         if (!response.ok) throw new Error('Failed to start stream')

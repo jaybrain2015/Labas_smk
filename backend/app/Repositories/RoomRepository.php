@@ -39,17 +39,10 @@ class RoomRepository
                 $end = $schedule->end_time;
 
                 if ($currentTime >= $start && $currentTime < $end) {
+                    // Room is currently in use
                     $status = 'busy';
                     $currentClass = $schedule->subject;
                     $freeUntil = $end;
-
-                    // Check if ending within 30 minutes
-                    $endCarbon = Carbon::createFromFormat('H:i:s', $end);
-                    $diffMinutes = $now->diffInMinutes($endCarbon, false);
-                    if ($diffMinutes <= 30 && $diffMinutes > 0) {
-                        $status = 'soon';
-                    }
-                    
                     continue;
                 }
 
@@ -57,6 +50,12 @@ class RoomRepository
                     $nextClassAt = $start;
                     if ($status === 'free') {
                         $freeUntil = $start;
+                        // Mark as 'soon' if next class starts within 30 minutes
+                        $startCarbon = Carbon::createFromFormat('H:i:s', $start);
+                        $minsUntilStart = $now->diffInMinutes($startCarbon, false);
+                        if ($minsUntilStart <= 30 && $minsUntilStart > 0) {
+                            $status = 'soon';
+                        }
                     }
                 }
             }

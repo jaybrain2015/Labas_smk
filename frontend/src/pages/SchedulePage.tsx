@@ -96,24 +96,26 @@ export default function SchedulePage() {
 
     const schedule = scheduleData?.data || []
 
-    const currentDayFull = DAYS_FULL[selectedDate.getDay()]
+    // Database always returns English days
+    const EN_DAYS_FULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
+    const currentDayFull = EN_DAYS_FULL[selectedDate.getDay()]
 
     const weekDates = useMemo(() => {
         const d = new Date(selectedDate)
         const day = d.getDay()
         const diff = d.getDate() - day + (day === 0 ? -6 : 1)
         d.setDate(diff)
-        return DAYS_FULL.map((_, i) => {
+        return EN_DAYS_FULL.map((_, i) => {
             const date = new Date(d)
             date.setDate(date.getDate() + i)
             return date
         })
     }, [selectedDate])
 
-    const getScheduleForDay = (dayName: string) => {
+    const getScheduleForDay = (dayNameEn: string) => {
         return schedule.filter((item: any) =>
-            item.day_of_week?.toLowerCase() === dayName.toLowerCase()
+            item.day_of_week?.toLowerCase() === dayNameEn.toLowerCase()
         ).sort((a: any, b: any) => (a.start_time || '').localeCompare(b.start_time || ''))
     }
 
@@ -169,8 +171,8 @@ export default function SchedulePage() {
                 <motion.div variants={itemVariants} className="flex items-center gap-4 overflow-x-auto pb-4 no-scrollbar">
                     {weekDates.map((date, idx) => {
                         const isSelected = date.getDate() === selectedDate.getDate() && date.getMonth() === selectedDate.getMonth()
-                        const dayName = DAYS_FULL[idx]
-                        const hasClasses = getScheduleForDay(dayName).length > 0
+                        const dayNameEn = EN_DAYS_FULL[idx]
+                        const hasClasses = getScheduleForDay(dayNameEn).length > 0
 
                         return (
                             <motion.button
@@ -287,7 +289,10 @@ export default function SchedulePage() {
                                                                 </div>
                                                             )}
 
-                                                            <h3 className={`text-xl font-black tracking-tight leading-tight truncate pr-4 ${isLive ? 'text-white' : 'text-slate-900'}`}>{item.subject}</h3>
+                                                            <h3 className={`text-xl font-black tracking-tight leading-tight truncate pr-4 ${isLive ? 'text-white' : 'text-slate-900'}`}>
+                                                                {/* @ts-ignore */}
+                                                                {t.subjectNames?.[item.subject] || item.subject}
+                                                            </h3>
                                                             <div className={`flex flex-wrap items-center gap-6 text-[11px] font-bold ${isLive ? 'text-slate-400' : 'text-slate-400'}`}>
                                                                 <span className="flex items-center gap-2 uppercase tracking-wider"><MapPin size={14} className={isLive ? 'text-accent' : 'text-red-300'} /> {t.roomLabel} {item.room?.number || '—'}</span>
                                                                 <span className="flex items-center gap-2 uppercase tracking-wider"><Users size={14} className={isLive ? 'text-accent' : 'text-red-300'} /> {item.lecturer}</span>

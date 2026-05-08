@@ -66,6 +66,32 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
+        User::create([
+            'name' => 'Deborah Okafor',
+            'email' => 'deborah.tosin@stud.smk.lt',
+            'password' => 'password',
+            'student_id' => 'SMK-2024-005',
+            'role' => 'student',
+            'language_preference' => 'en',
+            'course' => 'Bendrosios praktikos slauga',
+            'year' => 1,
+            'semester_level' => 1,
+        ]);
+
+
+        User::create([
+            'name' => 'John Samuel Jonah',
+            'email' => 'johnsamuel.jonah@stud.smk.lt',
+            'password' => 'password',
+            'student_id' => 'SMK-2024-006',
+            'role' => 'student',
+            'language_preference' => 'en',
+            'course' => 'Programavimas ir multimedija',
+            'year' => 1,
+            'semester_level' => 1,
+        ]);
+
+
         // ── Rooms ──────────────────────────────────────────
         $rooms = [];
         $roomData = [
@@ -149,6 +175,70 @@ class DatabaseSeeder extends Seeder
             ['subject' => 'Computer Networks', 'lecturer' => 'Dr. Karolis Petravičius', 'room' => '223', 'day' => 'Wednesday', 'start' => '09:00', 'end' => '10:30', 'group' => 'SMK-2024-003'],
             ['subject' => 'Lithuanian Language', 'lecturer' => 'Lect. Ona Ramanauskaitė', 'room' => '108', 'day' => 'Thursday', 'start' => '09:00', 'end' => '10:30', 'group' => 'SMK-2024-002'],
             ['subject' => 'Video Editing', 'lecturer' => 'Lect. Justina Rimaitė', 'room' => '310', 'day' => 'Friday', 'start' => '13:00', 'end' => '14:30', 'group' => 'SMK-2024-004'],
+
+            // ─── MARKETING (Marketingas ir reklamos kūrimas) ─────────────────
+            // Monday
+            ['subject' => 'Marketingo pagrindai',    'lecturer' => 'Dr. Tomas Gudas',         'room' => '203', 'day' => 'Monday',    'start' => '09:00', 'end' => '10:30', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Vartotojo elgsena',        'lecturer' => 'Lect. Simona Kasparavičiūtė', 'room' => '206', 'day' => 'Monday', 'start' => '10:45', 'end' => '12:15', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Vizualioji komunikacija',  'lecturer' => 'Lect. Dalia Martinkienė', 'room' => '313', 'day' => 'Monday',    'start' => '13:00', 'end' => '14:30', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Ekonomikos pagrindai',     'lecturer' => 'Prof. Marius Stankevičius','room' => '308', 'day' => 'Monday',   'start' => '14:45', 'end' => '16:15', 'group' => 'MKT-2024-001'],
+            // Tuesday
+            ['subject' => 'Kūrybinis rašymas',       'lecturer' => 'Lect. Simona Kasparavičiūtė', 'room' => '316', 'day' => 'Tuesday', 'start' => '09:00', 'end' => '10:30', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Vadybos pagrindai',        'lecturer' => 'Dr. Inga Šimkuvienė',     'room' => '304', 'day' => 'Tuesday',   'start' => '10:45', 'end' => '12:15', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Skaitmeninis marketingas', 'lecturer' => 'Dr. Tomas Gudas',         'room' => '203', 'day' => 'Tuesday',   'start' => '13:00', 'end' => '14:30', 'group' => 'MKT-2024-001'],
+            // Wednesday
+            ['subject' => 'Reklamos psichologija',    'lecturer' => 'Lect. Dalia Martinkienė', 'room' => '317', 'day' => 'Wednesday', 'start' => '09:00', 'end' => '10:30', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Rinkodaros tyrimai',       'lecturer' => 'Prof. Marius Stankevičius','room' => '306', 'day' => 'Wednesday', 'start' => '10:45', 'end' => '12:15', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Prekės ženklo valdymas',   'lecturer' => 'Dr. Tomas Gudas',         'room' => '203', 'day' => 'Wednesday', 'start' => '13:00', 'end' => '14:30', 'group' => 'MKT-2024-001'],
+            // Thursday
+            ['subject' => 'Ryšiai su visuomene',      'lecturer' => 'Lect. Simona Kasparavičiūtė', 'room' => '313', 'day' => 'Thursday', 'start' => '09:00', 'end' => '10:30', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Pardavimų valdymas',       'lecturer' => 'Dr. Inga Šimkuvienė',     'room' => '308', 'day' => 'Thursday',  'start' => '10:45', 'end' => '12:15', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Marketingo strategija',    'lecturer' => 'Dr. Tomas Gudas',         'room' => '203', 'day' => 'Thursday',  'start' => '13:00', 'end' => '14:30', 'group' => 'MKT-2024-001'],
+            // Friday
+            ['subject' => 'Medijų planavimas',        'lecturer' => 'Lect. Dalia Martinkienė', 'room' => '316', 'day' => 'Friday',    'start' => '09:00', 'end' => '10:30', 'group' => 'MKT-2024-001'],
+            ['subject' => 'Integruota marketingo komunikacija', 'lecturer' => 'Prof. Marius Stankevičius', 'room' => '304', 'day' => 'Friday', 'start' => '10:45', 'end' => '12:15', 'group' => 'MKT-2024-001'],
+
+            // ─── LOGISTICS (Transporto ir logistikos verslas) ─────────────────
+            // Monday
+            ['subject' => 'Logistikos pagrindai',       'lecturer' => 'Dr. Giedrius Vaičiūnas',   'room' => '305', 'day' => 'Monday',    'start' => '09:00', 'end' => '10:30', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Verslo ekonomika',            'lecturer' => 'Prof. Marius Stankevičius','room' => '318', 'day' => 'Monday',    'start' => '10:45', 'end' => '12:15', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Transporto sistemų apžvalga','lecturer' => 'Dr. Giedrius Vaičiūnas',   'room' => '309', 'day' => 'Monday',    'start' => '13:00', 'end' => '14:30', 'group' => 'LOG-2024-001'],
+            // Tuesday
+            ['subject' => 'Matematika verslo skaičiavimams', 'lecturer' => 'Prof. Jonas Jonauskas', 'room' => '319', 'day' => 'Tuesday', 'start' => '09:00', 'end' => '10:30', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Vadyba',                      'lecturer' => 'Dr. Inga Šimkuvienė',      'room' => '305', 'day' => 'Tuesday',  'start' => '10:45', 'end' => '12:15', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Sandėlių valdymas',           'lecturer' => 'Dr. Giedrius Vaičiūnas',   'room' => '309', 'day' => 'Tuesday',  'start' => '13:00', 'end' => '14:30', 'group' => 'LOG-2024-001'],
+            // Wednesday
+            ['subject' => 'Tiekimo grandinės valdymas',  'lecturer' => 'Dr. Giedrius Vaičiūnas',   'room' => '318', 'day' => 'Wednesday','start' => '09:00', 'end' => '10:30', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Tarptautinė prekyba',         'lecturer' => 'Prof. Marius Stankevičius','room' => '305', 'day' => 'Wednesday','start' => '10:45', 'end' => '12:15', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Muitinės procedūros',         'lecturer' => 'Lect. Rūta Norvilienė',    'room' => '309', 'day' => 'Wednesday','start' => '13:00', 'end' => '14:30', 'group' => 'LOG-2024-001'],
+            // Thursday
+            ['subject' => 'Logistikos pagrindai',        'lecturer' => 'Dr. Giedrius Vaičiūnas',   'room' => '319', 'day' => 'Thursday', 'start' => '09:00', 'end' => '10:30', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Transporto teisė',            'lecturer' => 'Lect. Rūta Norvilienė',    'room' => '305', 'day' => 'Thursday', 'start' => '10:45', 'end' => '12:15', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Verslo komunikacija',         'lecturer' => 'Dr. Inga Šimkuvienė',      'room' => '318', 'day' => 'Thursday', 'start' => '13:00', 'end' => '14:30', 'group' => 'LOG-2024-001'],
+            // Friday
+            ['subject' => 'Projektų vadyba',             'lecturer' => 'Dr. Inga Šimkuvienė',      'room' => '305', 'day' => 'Friday',   'start' => '09:00', 'end' => '10:30', 'group' => 'LOG-2024-001'],
+            ['subject' => 'Transporto sistemų apžvalga', 'lecturer' => 'Dr. Giedrius Vaičiūnas',   'room' => '309', 'day' => 'Friday',   'start' => '10:45', 'end' => '12:15', 'group' => 'LOG-2024-001'],
+
+            // ─── COSMETICS (Estetinė kosmetologija) ──────────────────────────
+            // Monday
+            ['subject' => 'Anatomija, fiziologija ir patologija', 'lecturer' => 'Dr. Rūta Janavičienė', 'room' => '202', 'day' => 'Monday', 'start' => '09:00', 'end' => '10:30', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Bendroji ir estetinė chemija',         'lecturer' => 'Prof. Algirdas Račas',  'room' => '202', 'day' => 'Monday', 'start' => '10:45', 'end' => '12:15', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Makiažo menas',                        'lecturer' => 'Lect. Vaida Adomavičienė','room' => '222', 'day' => 'Monday', 'start' => '13:00', 'end' => '14:30', 'group' => 'KOS-2024-001'],
+            // Tuesday
+            ['subject' => 'Mikrobiologija ir higiena',            'lecturer' => 'Dr. Rūta Janavičienė', 'room' => '202', 'day' => 'Tuesday','start' => '09:00', 'end' => '10:30', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Veido priežiūros pagrindai',           'lecturer' => 'Lect. Vaida Adomavičienė','room' => '222', 'day' => 'Tuesday','start' => '10:45', 'end' => '12:15', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Psichologija',                         'lecturer' => 'Prof. Algirdas Račas',  'room' => '207', 'day' => 'Tuesday','start' => '13:00', 'end' => '14:30', 'group' => 'KOS-2024-001'],
+            // Wednesday
+            ['subject' => 'Dermatologija',                        'lecturer' => 'Dr. Rūta Janavičienė', 'room' => '202', 'day' => 'Wednesday','start' => '09:00', 'end' => '10:30', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Rankų ir pėdų priežiūra',              'lecturer' => 'Lect. Vaida Adomavičienė','room' => '222', 'day' => 'Wednesday','start' => '10:45', 'end' => '12:15', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Sveika mityba ir sveika gyvensena',    'lecturer' => 'Lect. Jolanta Kazlauskienė','room' => '207', 'day' => 'Wednesday','start' => '13:00', 'end' => '14:30', 'group' => 'KOS-2024-001'],
+            // Thursday
+            ['subject' => 'Kosmetinė technologija ir aparatiniai metodai','lecturer' => 'Lect. Vaida Adomavičienė','room' => '202', 'day' => 'Thursday','start' => '09:00', 'end' => '10:30', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Kūno priežiūros metodikos',            'lecturer' => 'Lect. Vaida Adomavičienė','room' => '222', 'day' => 'Thursday','start' => '10:45', 'end' => '12:15', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Aromaterapija ir SPA procedūros',      'lecturer' => 'Lect. Jolanta Kazlauskienė','room' => '207', 'day' => 'Thursday','start' => '13:00', 'end' => '14:30', 'group' => 'KOS-2024-001'],
+            // Friday
+            ['subject' => 'Specializuotos kosmetinės procedūros', 'lecturer' => 'Lect. Vaida Adomavičienė','room' => '202', 'day' => 'Friday',   'start' => '09:00', 'end' => '10:30', 'group' => 'KOS-2024-001'],
+            ['subject' => 'Gydomojo makiažo pagrindai',           'lecturer' => 'Dr. Rūta Janavičienė', 'room' => '222', 'day' => 'Friday',   'start' => '10:45', 'end' => '12:15', 'group' => 'KOS-2024-001'],
         ];
 
         foreach ($scheduleData as $sd) {
@@ -164,23 +254,94 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // ── Events ──────────────────────────────────────────
-        $events = [
-            ['title' => 'Spring Semester Opening Ceremony', 'description' => 'Official opening of the Spring 2026 semester with welcome speeches from the rector and faculty deans.', 'location' => 'Main Hall, Vilnius Campus', 'starts_at' => '2026-02-03 10:00:00', 'ends_at' => '2026-02-03 12:00:00', 'category' => 'academic'],
-            ['title' => 'Career Day 2026', 'description' => 'Meet top employers from the IT and business sectors. Bring your CV!', 'location' => 'Building B, All Floors', 'starts_at' => '2026-03-15 09:00:00', 'ends_at' => '2026-03-15 17:00:00', 'category' => 'social'],
-            ['title' => 'Thesis Proposal Deadline', 'description' => 'Final deadline to submit your thesis proposal to your supervisor.', 'location' => 'Online (Student Portal)', 'starts_at' => '2026-03-01 23:59:00', 'ends_at' => null, 'category' => 'deadline'],
-            ['title' => 'AI Workshop: Prompt Engineering', 'description' => 'Hands-on workshop on effective prompt engineering with Claude and GPT models.', 'location' => 'Lab A301', 'starts_at' => '2026-03-10 14:00:00', 'ends_at' => '2026-03-10 17:00:00', 'category' => 'academic'],
-            ['title' => 'Student Basketball Tournament', 'description' => 'Inter-department basketball tournament. Sign up with your team of 5!', 'location' => 'Sports Hall', 'starts_at' => '2026-03-20 15:00:00', 'ends_at' => '2026-03-20 19:00:00', 'category' => 'social'],
-            ['title' => 'Midterm Exam Period Starts', 'description' => 'Midterm examination period begins. Check your schedule for exact dates.', 'location' => 'Various Rooms', 'starts_at' => '2026-03-25 08:00:00', 'ends_at' => '2026-04-05 18:00:00', 'category' => 'academic'],
-            ['title' => 'Course Registration Deadline', 'description' => 'Last day to register for elective courses next semester.', 'location' => 'Student Portal', 'starts_at' => '2026-04-15 23:59:00', 'ends_at' => null, 'category' => 'deadline'],
-            ['title' => 'Hackathon: Smart Campus', 'description' => '24-hour hackathon to build solutions for campus improvement. Pizza included! 🍕', 'location' => 'Vilnius Campus, Floor 3', 'starts_at' => '2026-04-10 18:00:00', 'ends_at' => '2026-04-11 18:00:00', 'category' => 'social'],
-            ['title' => 'Guest Lecture: Tech Industry Trends', 'description' => 'Guest speaker from a leading tech company discusses current and future industry trends.', 'location' => 'Lecture Hall A201', 'starts_at' => '2026-04-20 13:00:00', 'ends_at' => '2026-04-20 15:00:00', 'category' => 'academic'],
-            ['title' => 'Final Project Submission', 'description' => 'Deadline for ALL final year project submissions.', 'location' => 'Online (Student Portal)', 'starts_at' => '2026-05-10 23:59:00', 'ends_at' => null, 'category' => 'deadline'],
+        // ── Nursing Year 1 Schedules (for Deborah) ─────────────
+        $nursingSchedules = [
+            // Monday — 3 subjects
+            ['subject' => 'Anatomija ir histologija',     'lecturer' => 'Dr. Rūta Janavičienė',       'room' => '109', 'day' => 'Monday',    'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Fiziologija',                  'lecturer' => 'Dr. Rūta Janavičienė',       'room' => '109', 'day' => 'Monday',    'start' => '10:45', 'end' => '12:15'],
+            ['subject' => 'Slaugos teorija ir pagrindai', 'lecturer' => 'Lect. Jolanta Kazlauskienė', 'room' => '110', 'day' => 'Monday',    'start' => '13:00', 'end' => '14:30'],
+
+            // Tuesday — 3 subjects
+            ['subject' => 'Bioetika',                     'lecturer' => 'Prof. Algirdas Račas',       'room' => '108', 'day' => 'Tuesday',   'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Mitybos pagrindai',            'lecturer' => 'Lect. Jolanta Kazlauskienė', 'room' => '110', 'day' => 'Tuesday',   'start' => '10:45', 'end' => '12:15'],
+            ['subject' => 'Pirmoji medicinos pagalba',    'lecturer' => 'Dr. Rūta Janavičienė',       'room' => '109', 'day' => 'Tuesday',   'start' => '13:00', 'end' => '14:30'],
+
+            // Wednesday — 2 subjects
+            ['subject' => 'Anatomija ir histologija',     'lecturer' => 'Dr. Rūta Janavičienė',       'room' => '109', 'day' => 'Wednesday', 'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Užsienio kalba profesinei veiklai', 'lecturer' => 'Lect. Sarah Johnson',   'room' => '108', 'day' => 'Wednesday', 'start' => '10:45', 'end' => '12:15'],
+
+            // Thursday — 3 subjects
+            ['subject' => 'Slaugos teorija ir pagrindai', 'lecturer' => 'Lect. Jolanta Kazlauskienė', 'room' => '110', 'day' => 'Thursday',  'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Fiziologija',                  'lecturer' => 'Dr. Rūta Janavičienė',       'room' => '109', 'day' => 'Thursday',  'start' => '10:45', 'end' => '12:15'],
+            ['subject' => 'Psichologija',                 'lecturer' => 'Prof. Algirdas Račas',       'room' => '108', 'day' => 'Thursday',  'start' => '13:00', 'end' => '14:30'],
+
+            // Friday — 2 subjects
+            ['subject' => 'Pirmoji medicinos pagalba',    'lecturer' => 'Dr. Rūta Janavičienė',       'room' => '109', 'day' => 'Friday',    'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Mitybos pagrindai',            'lecturer' => 'Lect. Jolanta Kazlauskienė', 'room' => '110', 'day' => 'Friday',    'start' => '10:45', 'end' => '12:15'],
         ];
 
-        foreach ($events as $e) {
-            Event::create($e);
+        foreach ($nursingSchedules as $ns) {
+            Schedule::create([
+                'subject'        => $ns['subject'],
+                'lecturer'       => $ns['lecturer'],
+                'room_id'        => $rooms[$ns['room']]->id,
+                'day_of_week'    => $ns['day'],
+                'start_time'     => $ns['start'],
+                'end_time'       => $ns['end'],
+                'group_name'     => 'SMK-2024-005',
+                'course'         => 'Bendrosios praktikos slauga',
+                'year'           => 1,
+                'semester_level' => 1,
+                'semester'       => 'Spring 2026',
+            ]);
         }
+
+        // Programming and Multimedia Schedule (All Courses)
+        $progSchedules = [
+            // Monday
+            ['subject' => 'Programavimo pagrindai (C#, Java)',           'lecturer' => 'Dr. Mindaugas Kurmis',       'room' => '210', 'day' => 'Monday',    'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Diskretioji matematika',                      'lecturer' => 'Prof. Jonas Jonauskas',      'room' => '201', 'day' => 'Monday',    'start' => '10:45', 'end' => '12:15'],
+            ['subject' => 'Kompiuterių architektūra ir operacinės...','lecturer' => 'Dr. Tomas Ramanauskas',      'room' => '210', 'day' => 'Monday',    'start' => '13:00', 'end' => '14:30'],
+            ['subject' => 'Duomenų struktūros ir algoritmai',          'lecturer' => 'Dr. Mindaugas Kurmis',       'room' => '210', 'day' => 'Monday',    'start' => '14:45', 'end' => '16:15'],
+            // Tuesday
+            ['subject' => 'Grafinis dizainas',                           'lecturer' => 'Lect. Vaida Adomavičienė',   'room' => '223', 'day' => 'Tuesday',   'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Užsienio kalba (anglų k.)',                 'lecturer' => 'Lect. Anna Smith',           'room' => '218', 'day' => 'Tuesday',   'start' => '10:45', 'end' => '12:15'],
+            ['subject' => 'Objektinis programavimas',                    'lecturer' => 'Dr. Mindaugas Kurmis',       'room' => '210', 'day' => 'Tuesday',   'start' => '13:00', 'end' => '14:30'],
+            ['subject' => 'Duomenų bazės',                               'lecturer' => 'Prof. Linas Petraitis',      'room' => '210', 'day' => 'Tuesday',   'start' => '14:45', 'end' => '16:15'],
+            // Wednesday
+            ['subject' => 'Tinklo technologijos',                        'lecturer' => 'Dr. Tomas Ramanauskas',      'room' => '210', 'day' => 'Wednesday', 'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Internetinių technologijų kūrimas',       'lecturer' => 'Lect. Eimantas Sabaliauskas','room' => '224', 'day' => 'Wednesday', 'start' => '10:45', 'end' => '12:15'],
+            ['subject' => 'Multimedijos technologijos',                  'lecturer' => 'Lect. Vaida Adomavičienė',   'room' => '223', 'day' => 'Wednesday', 'start' => '13:00', 'end' => '14:30'],
+            ['subject' => 'Vartotojo sąsajos dizainas (UI/UX)',      'lecturer' => 'Lect. Karolis Butkus',       'room' => '223', 'day' => 'Wednesday', 'start' => '14:45', 'end' => '16:15'],
+            // Thursday
+            ['subject' => 'Profesinė praktika',                          'lecturer' => 'Dr. Rūta Maciulevičienė',    'room' => '111', 'day' => 'Thursday',  'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Mobiliųjų aplikacijų kūrimas',                'lecturer' => 'Lect. Eimantas Sabaliauskas','room' => '224', 'day' => 'Thursday',  'start' => '10:45', 'end' => '12:15'],
+            ['subject' => 'Debesų kompiuterija',                         'lecturer' => 'Prof. Linas Petraitis',      'room' => '210', 'day' => 'Thursday',  'start' => '13:00', 'end' => '14:30'],
+            // Friday
+            ['subject' => 'Programinės įrangos inžinerija',              'lecturer' => 'Dr. Mindaugas Kurmis',       'room' => '210', 'day' => 'Friday',    'start' => '09:00', 'end' => '10:30'],
+            ['subject' => 'Baigiamoji praktika',                         'lecturer' => 'Dr. Rūta Maciulevičienė',    'room' => '111', 'day' => 'Friday',    'start' => '10:45', 'end' => '12:15'],
+            ['subject' => 'Profesinio bakalauro baigiamasis darbas',     'lecturer' => 'Prof. Jonas Jonauskas',      'room' => '111', 'day' => 'Friday',    'start' => '13:00', 'end' => '14:30'],
+        ];
+
+        foreach ($progSchedules as $ps) {
+            Schedule::create([
+                'subject'        => $ps['subject'],
+                'lecturer'       => $ps['lecturer'],
+                'room_id'        => $rooms[$ps['room']]->id,
+                'day_of_week'    => $ps['day'],
+                'start_time'     => $ps['start'],
+                'end_time'       => $ps['end'],
+                'group_name'     => 'SMK-2024-006',
+                'course'         => 'Programavimas ir multimedija',
+                'year'           => 1,
+                'semester_level' => 1,
+                'semester'       => 'Spring 2026',
+            ]);
+        }
+
+        // ── Events ──────────────────────────────────────────
+        $this->call(EventSeeder::class);
+
 
         // ── FAQ Entries ──────────────────────────────────────
         $faqs = [
